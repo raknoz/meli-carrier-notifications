@@ -5,6 +5,7 @@ import com.project.meli.demo.dtos.PackageRequestDTO;
 import com.project.meli.demo.dtos.PackageResponseDTO;
 import com.project.meli.demo.services.PackageService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,5 +29,15 @@ public class PackageController {
     @PostMapping
     public ResponseEntity<PackageResponseDTO> getLastOrderState(@RequestBody final PackageRequestDTO request) {
         return ResponseEntity.ok(new PackageResponseDTO(packageService.packages(request)));
+    }
+
+    /**
+     * Method to validate the status health of the application.
+     *
+     * @return String with text in case to validate the status of the application.
+     */
+    @GetMapping("/health")
+    public ResponseEntity<String> getHealth() {
+        return ResponseEntity.ok("I am alive!");
     }
 }

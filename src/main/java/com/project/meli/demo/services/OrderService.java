@@ -1,7 +1,7 @@
 package com.project.meli.demo.services;
 
-import com.project.meli.demo.entities.OrderStatus;
-import com.project.meli.demo.entities.OrderSubStatus;
+import com.project.meli.demo.entities.ShippingStatus;
+import com.project.meli.demo.entities.ShippingSubStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,10 +11,10 @@ public class OrderService {
      * Method to register the consulting of each order.
      *
      * @param orderId        identification of the order.
-     * @param orderStatus    Last status of the order.
-     * @param orderSubStatus Las subStatus of the order.
+     * @param shippingStatus    Last status of the order.
+     * @param shippingSubStatus Las subStatus of the order.
      */
-    public void registerOrder(final String orderId, final OrderStatus orderStatus, final OrderSubStatus orderSubStatus) {
+    public void registerOrder(final String orderId, final ShippingStatus shippingStatus, final ShippingSubStatus shippingSubStatus) {
 
         //orderRepository.save(new Order());
     }

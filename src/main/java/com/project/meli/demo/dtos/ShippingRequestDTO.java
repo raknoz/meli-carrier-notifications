@@ -2,9 +2,9 @@ package com.project.meli.demo.dtos;
 
 import java.util.List;
 
-public class PackageRequestDTO {
+public class ShippingRequestDTO {
     private String id;
-    private List<StateOrderRequestDTO> inputs;
+    private List<StateShippingRequestDTO> inputs;
 
     public String getId() {
         return id;
@@ -14,11 +14,11 @@ public class PackageRequestDTO {
         this.id = id;
     }
 
-    public List<StateOrderRequestDTO> getInputs() {
+    public List<StateShippingRequestDTO> getInputs() {
         return inputs;
     }
 
-    public void setInputs(List<StateOrderRequestDTO> inputs) {
+    public void setInputs(List<StateShippingRequestDTO> inputs) {
         this.inputs = inputs;
     }
 }

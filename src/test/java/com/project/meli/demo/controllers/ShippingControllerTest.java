@@ -1,10 +1,10 @@
 package com.project.meli.demo.controllers;
 
-import com.project.meli.demo.dtos.PackageRequestDTO;
+import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
-import com.project.meli.demo.services.PackageService;
+import com.project.meli.demo.services.ShippingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static com.project.meli.demo.utils.TestUtils.HEALTH_MSG_OK;
 import static com.project.meli.demo.utils.TestUtils.ORDER_SUB_STATUS_SHIPPED_NULL_MSG;
 import static com.project.meli.demo.utils.TestUtils.packageRequestDtoAsJson;
 import static com.project.meli.demo.utils.TestUtils.packageResponseDtoAsJson;
@@ -30,13 +31,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(controllers = PackageController.class)
+@WebMvcTest(controllers = ShippingController.class)
 @AutoConfigureMockMvc
-public class PackageControllerTest {
+public class ShippingControllerTest {
     private static final String BASE_URL = "/package";
+    private static final String URL_HEALTH = "/health";
 
     @Autowired
     private WebApplicationContext wac;
@@ -44,7 +47,7 @@ public class PackageControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private PackageService packageService;
+    private ShippingService shippingService;
 
     @BeforeEach
     void setup() {
@@ -57,7 +60,7 @@ public class PackageControllerTest {
     public void packageControllerBadRequestExceptionTest() throws Exception {
 
         //Given
-        when(packageService.packages(any(PackageRequestDTO.class))).thenThrow(new BadRequestException("Expected Exception test"));
+        when(shippingService.packages(any(ShippingRequestDTO.class))).thenThrow(new BadRequestException("Expected Exception test"));
 
         //Then
         final ResultActions resultActions =
@@ -76,7 +79,7 @@ public class PackageControllerTest {
     public void packageControllerNotStatusExceptionTest() throws Exception {
 
         //Given
-        when(packageService.packages(any(PackageRequestDTO.class))).thenThrow(new NotStatusException("Expected Exception test"));
+        when(shippingService.packages(any(ShippingRequestDTO.class))).thenThrow(new NotStatusException("Expected Exception test"));
 
         //Then
         final ResultActions resultActions =
@@ -95,7 +98,7 @@ public class PackageControllerTest {
     public void packageControllerNotSubStatusExceptionTest() throws Exception {
 
         //Given
-        when(packageService.packages(any(PackageRequestDTO.class))).thenThrow(new NotSubStatusException("Expected Exception test"));
+        when(shippingService.packages(any(ShippingRequestDTO.class))).thenThrow(new NotSubStatusException("Expected Exception test"));
 
         //Then
         final ResultActions resultActions =
@@ -116,7 +119,7 @@ public class PackageControllerTest {
         final String messageExpected = packageResponseDtoAsJson(ORDER_SUB_STATUS_SHIPPED_NULL_MSG);
 
         //Given
-        when(packageService.packages(any(PackageRequestDTO.class))).thenReturn(ORDER_SUB_STATUS_SHIPPED_NULL_MSG);
+        when(shippingService.packages(any(ShippingRequestDTO.class))).thenReturn(ORDER_SUB_STATUS_SHIPPED_NULL_MSG);
 
         //Then
         final ResultActions resultActions =
@@ -129,4 +132,18 @@ public class PackageControllerTest {
         assertEquals(HttpStatus.OK.value(), resultActions.andReturn().getResponse().getStatus());
         assertEquals(messageExpected, resultActions.andReturn().getResponse().getContentAsString());
     }
+
+    @DisplayName("Class: PackageController - method: getHealth - flow: Ok ")
+    @Test
+    public void getHealthOkTest() throws Exception {
+        //Then
+        final ResultActions resultActions =
+                mockMvc.perform(get(BASE_URL + URL_HEALTH)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        assertNotNull(resultActions);
+        assertEquals(HttpStatus.OK.value(), resultActions.andReturn().getResponse().getStatus());
+        assertEquals(HEALTH_MSG_OK, resultActions.andReturn().getResponse().getContentAsString());
+    }
+
 }

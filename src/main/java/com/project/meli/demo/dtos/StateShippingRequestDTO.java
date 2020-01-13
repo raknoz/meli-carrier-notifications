@@ -1,10 +1,10 @@
 package com.project.meli.demo.dtos;
 
-public class StateOrderRequestDTO {
+public class StateShippingRequestDTO {
     private String status;
     private String substatus;
 
-    public StateOrderRequestDTO(final String status, final String substatus) {
+    public StateShippingRequestDTO(final String status, final String substatus) {
         this.status = status;
         this.substatus = substatus;
     }

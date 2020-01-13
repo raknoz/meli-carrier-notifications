@@ -1,6 +1,6 @@
 package com.project.meli.demo.services;
 
-import com.project.meli.demo.dtos.PackageRequestDTO;
+import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
@@ -23,67 +23,67 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
-public class PackageServiceTest {
+public class ShippingServiceTest {
 
     @InjectMocks
-    private PackageService packageService;
+    private ShippingService shippingService;
 
     @DisplayName("Class: PackageService - method: packages - flow: FAIL (Not Status Exception)")
     @Test
     public void packageServiceStatusAreEmptyTest() {
-        final PackageRequestDTO requestDTO = buildPackageRequestDtoEmptyStatus();
+        final ShippingRequestDTO requestDTO = buildPackageRequestDtoEmptyStatus();
         //When
         assertThatThrownBy(() -> {
-            packageService.packages(requestDTO);
+            shippingService.packages(requestDTO);
         }).isInstanceOf(NotStatusException.class);
     }
 
     @DisplayName("Class: PackageService - method: packages - flow: FAIL (Status not defined")
     @Test
     public void packageServiceStatusIsBlankTest() {
-        final PackageRequestDTO requestDTO = buildPackageRequestDtoBlankStatus();
+        final ShippingRequestDTO requestDTO = buildPackageRequestDtoBlankStatus();
         //When
         assertThatThrownBy(() -> {
-            packageService.packages(requestDTO);
+            shippingService.packages(requestDTO);
         }).isInstanceOf(BadRequestException.class);
     }
 
     @DisplayName("Class: PackageService - method: packages - flow: FAIL (Status not found")
     @Test
     public void packageServiceStatusIsWrongTest() {
-        final PackageRequestDTO requestDTO = buildPackageRequestDtoWrongStatus();
+        final ShippingRequestDTO requestDTO = buildPackageRequestDtoWrongStatus();
         //When
         assertThatThrownBy(() -> {
-            packageService.packages(requestDTO);
+            shippingService.packages(requestDTO);
         }).isInstanceOf(NotStatusException.class);
     }
 
     @DisplayName("Class: PackageService - method: packages - flow: FAIL (Sub Status not found")
     @Test
     public void packageServiceSubStatusIsWrongTest() {
-        final PackageRequestDTO requestDTO = buildPackageRequestDtoWrongSubStatus();
+        final ShippingRequestDTO requestDTO = buildPackageRequestDtoWrongSubStatus();
         //When
         assertThatThrownBy(() -> {
-            packageService.packages(requestDTO);
+            shippingService.packages(requestDTO);
         }).isInstanceOf(NotSubStatusException.class);
     }
 
     @DisplayName("Class: PackageService - method: packages - flow: FAIL (Sub Status not belong to defined status")
     @Test
     public void packageServiceSubStatusNotBelongStatusTest() {
-        final PackageRequestDTO requestDTO = buildPackageRequestDtoSubStatusNotBelongStatus();
+        final ShippingRequestDTO requestDTO = buildPackageRequestDtoSubStatusNotBelongStatus();
         //When
         assertThatThrownBy(() -> {
-            packageService.packages(requestDTO);
+            shippingService.packages(requestDTO);
         }).isInstanceOf(BadRequestException.class);
     }
 
     @DisplayName("Class: PackageService - method: packages - flow: OK")
     @Test
     public void packageServiceStatusDisorderTest() {
-        final PackageRequestDTO requestDTO = buildPackageRequestDtoDisorderStatus();
+        final ShippingRequestDTO requestDTO = buildPackageRequestDtoDisorderStatus();
         //When
-        final String messageResponse = packageService.packages(requestDTO);
+        final String messageResponse = shippingService.packages(requestDTO);
         //Then
         assertNotNull(messageResponse);
         assertEquals(ORDER_SUB_STATUS_LOST_MSG, messageResponse);
@@ -92,9 +92,9 @@ public class PackageServiceTest {
     @DisplayName("Class: PackageService - method: packages - flow: OK")
     @Test
     public void packageServiceStatusInOrderTest() {
-        final PackageRequestDTO requestDTO = buildPackageRequestDtoInOrderStatus();
+        final ShippingRequestDTO requestDTO = buildPackageRequestDtoInOrderStatus();
         //When
-        final String messageResponse = packageService.packages(requestDTO);
+        final String messageResponse = shippingService.packages(requestDTO);
         //Then
         assertNotNull(messageResponse);
         assertEquals(ORDER_SUB_STATUS_LOST_MSG, messageResponse);

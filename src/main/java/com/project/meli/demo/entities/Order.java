@@ -5,13 +5,15 @@ import java.time.LocalDateTime;
 public class Order {
     private final Long id;
     private final String orderId;
-    private final OrderMovement orderMovement;
+    private final String status;
+    private final String subStatus;
     private final LocalDateTime dateTime;
 
-    public Order(final Long id, final String packageId, final OrderMovement orderMovement, final LocalDateTime dateTime) {
+    public Order(final Long id, final String orderId, final String status, final String subStatus, final LocalDateTime dateTime) {
         this.id = id;
-        this.orderId = packageId;
-        this.orderMovement = orderMovement;
+        this.orderId = orderId;
+        this.status = status;
+        this.subStatus = subStatus;
         this.dateTime = dateTime;
     }
 
@@ -19,8 +21,12 @@ public class Order {
         return orderId;
     }
 
-    public OrderMovement getOrderMovement() {
-        return orderMovement;
+    public String getStatus() {
+        return status;
+    }
+
+    public String getSubStatus() {
+        return subStatus;
     }
 
     public LocalDateTime getDateTime() {

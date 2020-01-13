@@ -1,9 +1,9 @@
 package com.project.meli.demo.controllers;
 
 
-import com.project.meli.demo.dtos.PackageRequestDTO;
-import com.project.meli.demo.dtos.PackageResponseDTO;
-import com.project.meli.demo.services.PackageService;
+import com.project.meli.demo.dtos.ShippingRequestDTO;
+import com.project.meli.demo.dtos.ShippingResponseDTO;
+import com.project.meli.demo.services.ShippingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/package")
-public class PackageController {
-    private PackageService packageService;
+public class ShippingController {
+    private ShippingService shippingService;
 
-    public PackageController(final PackageService packageService) {
-        this.packageService = packageService;
+    public ShippingController(final ShippingService shippingService) {
+        this.shippingService = shippingService;
     }
 
     /**
@@ -27,8 +27,8 @@ public class PackageController {
      * @return A Object with the message of state.
      */
     @PostMapping
-    public ResponseEntity<PackageResponseDTO> getLastOrderStatus(@RequestBody final PackageRequestDTO request) {
-        return ResponseEntity.ok(new PackageResponseDTO(packageService.packages(request)));
+    public ResponseEntity<ShippingResponseDTO> getLastOrderStatus(@RequestBody final ShippingRequestDTO request) {
+        return ResponseEntity.ok(new ShippingResponseDTO(shippingService.packages(request)));
     }
 
     /**

@@ -2,7 +2,7 @@ package com.project.meli.demo.entities;
 
 import com.project.meli.demo.exceptions.NotStatusException;
 
-public enum OrderStatus {
+public enum ShippingStatus {
     HANDLING(1),
     READY_TO_SHIP(2),
     SHIPPED(3),
@@ -11,14 +11,14 @@ public enum OrderStatus {
 
     private Integer order;
 
-    OrderStatus(final Integer order) {
+    ShippingStatus(final Integer order) {
         this.order = order;
     }
 
-    public static OrderStatus wrapperValueOf(final String statusName) {
+    public static ShippingStatus wrapperValueOf(final String statusName) {
         try {
-            return OrderStatus.valueOf(statusName);
-        } catch (Exception ex) {
+            return ShippingStatus.valueOf(statusName);
+        } catch (RuntimeException rex) {
             throw new NotStatusException("Status not found");
         }
     }

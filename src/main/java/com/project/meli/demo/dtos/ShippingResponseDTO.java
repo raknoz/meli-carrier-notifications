@@ -2,12 +2,12 @@ package com.project.meli.demo.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class PackageResponseDTO {
+public class ShippingResponseDTO {
 
     @JsonProperty("package")
     private String message;
 
-    public PackageResponseDTO(final String message){
+    public ShippingResponseDTO(final String message){
         this.message = message;
     }
 

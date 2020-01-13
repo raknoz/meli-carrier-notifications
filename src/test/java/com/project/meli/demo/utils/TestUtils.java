@@ -49,9 +49,12 @@ public class TestUtils {
         return getPackageRequestDTO(ORDER_STATUS_WRONG, VALUE_EMPTY);
     }
 
-
     public static PackageRequestDTO buildPackageRequestDtoWrongSubStatus() {
         return getPackageRequestDTO(ORDER_STATUS_DELIVERED, ORDER_SUB_STATUS_WRONG);
+    }
+
+    public static PackageRequestDTO buildPackageRequestDtoSubStatusNotBelongStatus() {
+        return getPackageRequestDTO(ORDER_STATUS_DELIVERED, ORDER_SUB_STATUS_PRINTED);
     }
 
     public static PackageRequestDTO buildPackageRequestDtoDisorderStatus() {

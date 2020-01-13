@@ -4,7 +4,6 @@ import com.project.meli.demo.dtos.PackageRequestDTO;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +15,7 @@ import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoBlankS
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoDisorderStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoEmptyStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoInOrderStatus;
+import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoSubStatusNotBelongStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoWrongStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoWrongSubStatus;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -27,10 +27,6 @@ public class PackageServiceTest {
 
     @InjectMocks
     private PackageService packageService;
-
-    @BeforeEach
-    public void setup() {
-    }
 
     @DisplayName("Class: PackageService - method: packages - flow: FAIL (Not Status Exception)")
     @Test
@@ -72,13 +68,23 @@ public class PackageServiceTest {
         }).isInstanceOf(NotSubStatusException.class);
     }
 
+    @DisplayName("Class: PackageService - method: packages - flow: FAIL (Sub Status not belong to defined status")
+    @Test
+    public void packageServiceSubStatusNotBelongStatusTest() {
+        final PackageRequestDTO requestDTO = buildPackageRequestDtoSubStatusNotBelongStatus();
+        //When
+        assertThatThrownBy(() -> {
+            packageService.packages(requestDTO);
+        }).isInstanceOf(BadRequestException.class);
+    }
+
     @DisplayName("Class: PackageService - method: packages - flow: OK")
     @Test
     public void packageServiceStatusDisorderTest() {
         final PackageRequestDTO requestDTO = buildPackageRequestDtoDisorderStatus();
         //When
-       final String messageResponse =  packageService.packages(requestDTO);
-       //Then
+        final String messageResponse = packageService.packages(requestDTO);
+        //Then
         assertNotNull(messageResponse);
         assertEquals(ORDER_SUB_STATUS_LOST_MSG, messageResponse);
     }
@@ -88,7 +94,7 @@ public class PackageServiceTest {
     public void packageServiceStatusInOrderTest() {
         final PackageRequestDTO requestDTO = buildPackageRequestDtoInOrderStatus();
         //When
-        final String messageResponse =  packageService.packages(requestDTO);
+        final String messageResponse = packageService.packages(requestDTO);
         //Then
         assertNotNull(messageResponse);
         assertEquals(ORDER_SUB_STATUS_LOST_MSG, messageResponse);

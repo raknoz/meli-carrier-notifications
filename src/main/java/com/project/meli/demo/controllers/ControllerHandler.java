@@ -3,6 +3,7 @@ package com.project.meli.demo.controllers;
 import com.project.meli.demo.entities.ExceptionResponse;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
+import com.project.meli.demo.exceptions.NotSubStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,7 +27,7 @@ public class ControllerHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler({NotStatusException.class})
+    @ExceptionHandler({NotStatusException.class, NotSubStatusException.class})
     public ResponseEntity<ExceptionResponse> handleNotFoundExceptions(final Exception exception, final WebRequest request) {
         exceptionResponse = new ExceptionResponse(LocalDateTime.now(), exception.getMessage(),
                 request.getDescription(false));

@@ -27,7 +27,7 @@ public class PackageController {
      * @return A Object with the message of state.
      */
     @PostMapping
-    public ResponseEntity<PackageResponseDTO> getLastOrderState(@RequestBody final PackageRequestDTO request) {
+    public ResponseEntity<PackageResponseDTO> getLastOrderStatus(@RequestBody final PackageRequestDTO request) {
         return ResponseEntity.ok(new PackageResponseDTO(packageService.packages(request)));
     }
 

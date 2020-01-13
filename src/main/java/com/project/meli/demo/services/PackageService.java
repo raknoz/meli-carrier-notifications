@@ -28,31 +28,31 @@ public class PackageService {
     public String packages(final PackageRequestDTO request) {
         OrderMovement orderMovement = request.getInputs().stream()
                 .map(this::getOrderMovement)
-                .max(Comparator.comparing((OrderMovement om) -> om.getStatus().ordinal())
-                        .thenComparing(om -> om.getSubStatus().ordinal()))
+                .max(Comparator.comparing((OrderMovement om) -> om.getStatus().getOrder())
+                        .thenComparing(om -> om.getSubStatus().getOrder()))
                 .orElseThrow(() -> new NotStatusException("No data"));
         return orderMovement.getSubStatus().getMessage();
     }
 
     private OrderMovement getOrderMovement(final StateOrderRequestDTO stateOrderRequestDTO) {
         if (StringUtils.isBlank(stateOrderRequestDTO.getStatus())) {
-            throw new BadRequestException("Datos erroneos");
+            throw new BadRequestException("Status not defined");
         }
-        final OrderStatus status = OrderStatus.valueOf(stateOrderRequestDTO.getStatus().toUpperCase());
+        final OrderStatus status = OrderStatus.getOrderStatus(stateOrderRequestDTO.getStatus().toUpperCase());
         return new OrderMovement(status, getSubStatus(stateOrderRequestDTO.getSubstatus(), status));
     }
 
     private OrderSubStatus getSubStatus(final String subStatus, final OrderStatus orderStatus) {
         OrderSubStatus orderSubStatus;
         if (StringUtils.isNotBlank(subStatus)) {
-            orderSubStatus = OrderSubStatus.valueOf(subStatus.toUpperCase());
+            orderSubStatus = OrderSubStatus.getOrderSubStatus(subStatus.toUpperCase());
         } else {
             if (!nullMapping.containsKey(orderStatus)) {
                 throw new BadRequestException("Not order status");
             }
             orderSubStatus = nullMapping.get(orderStatus);
         }
-        if (orderStatus.equals(orderSubStatus.getStatus())) {
+        if (!orderStatus.equals(orderSubStatus.getStatus())) {
             throw new BadRequestException("Sub Status does not belong to this status");
         }
         return orderSubStatus;

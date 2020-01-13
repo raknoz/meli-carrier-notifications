@@ -30,7 +30,7 @@ public class PackageService {
                 .map(this::getOrderMovement)
                 .max(Comparator.comparing((OrderMovement om) -> om.getStatus().getOrder())
                         .thenComparing(om -> om.getSubStatus().getOrder()))
-                .orElseThrow(() -> new NotStatusException("No data"));
+                .orElseThrow(() -> new NotStatusException("Status are empty"));
         return orderMovement.getSubStatus().getMessage();
     }
 
@@ -38,17 +38,17 @@ public class PackageService {
         if (StringUtils.isBlank(stateOrderRequestDTO.getStatus())) {
             throw new BadRequestException("Status not defined");
         }
-        final OrderStatus status = OrderStatus.getOrderStatus(stateOrderRequestDTO.getStatus().toUpperCase());
+        final OrderStatus status = OrderStatus.wrapperValueOf(stateOrderRequestDTO.getStatus().toUpperCase());
         return new OrderMovement(status, getSubStatus(stateOrderRequestDTO.getSubstatus(), status));
     }
 
     private OrderSubStatus getSubStatus(final String subStatus, final OrderStatus orderStatus) {
         OrderSubStatus orderSubStatus;
         if (StringUtils.isNotBlank(subStatus)) {
-            orderSubStatus = OrderSubStatus.getOrderSubStatus(subStatus.toUpperCase());
+            orderSubStatus = OrderSubStatus.wrapperValueOf(subStatus.toUpperCase());
         } else {
             if (!nullMapping.containsKey(orderStatus)) {
-                throw new BadRequestException("Not order status");
+                throw new NotStatusException("Status Not found");
             }
             orderSubStatus = nullMapping.get(orderStatus);
         }

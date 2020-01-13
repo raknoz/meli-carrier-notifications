@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static com.project.meli.demo.utils.TestUtils.ORDER_SUB_STATUS_MSG;
+import static com.project.meli.demo.utils.TestUtils.ORDER_SUB_STATUS_SHIPPED_NULL_MSG;
 import static com.project.meli.demo.utils.TestUtils.packageRequestDtoAsJson;
 import static com.project.meli.demo.utils.TestUtils.packageResponseDtoAsJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -113,10 +113,10 @@ public class PackageControllerTest {
     @Test
     public void packageControllerOkTest() throws Exception {
         //
-        final String messageExpected = packageResponseDtoAsJson();
+        final String messageExpected = packageResponseDtoAsJson(ORDER_SUB_STATUS_SHIPPED_NULL_MSG);
 
         //Given
-        when(packageService.packages(any(PackageRequestDTO.class))).thenReturn(ORDER_SUB_STATUS_MSG);
+        when(packageService.packages(any(PackageRequestDTO.class))).thenReturn(ORDER_SUB_STATUS_SHIPPED_NULL_MSG);
 
         //Then
         final ResultActions resultActions =

@@ -4,6 +4,11 @@ public class StateOrderRequestDTO {
     private String status;
     private String substatus;
 
+    public StateOrderRequestDTO(final String status, final String substatus) {
+        this.status = status;
+        this.substatus = substatus;
+    }
+
     public String getStatus() {
         return status;
     }

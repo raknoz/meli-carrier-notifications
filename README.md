@@ -79,10 +79,11 @@ mvn clean install
 | H2 Database           | http://localhost:9001/h2-console                  | Driver:`org.h2.Driver` <br/> JDBC URL:`jdbc:h2:mem:demodb` <br/> User Name:`sa` <br/> Password: M3li2020  |
 | (POST) package        | http://localhost:9001/api-shipping/package        | End-point to validate the status of a Shipping.                                                           |
 | (GET) health          | http://localhost:9001/api-shipping/health         | End-point to know if the application response.                                                            |
+| (GET) statistics      | http://localhost:9001/api-shipping/statistics     | End-point to query information about the movements of shipments.                                          |
 
 
-
-If you get the status about some shipping have to send a JSON with the next information and structure:
+### Package
+If you get the status about some shipping have to send a JSON in the body with the next information and structure:
 
 ```json
 {
@@ -112,6 +113,7 @@ And the application response with the description of the last sub-status:
 }
 ```
 
+### Health
 
 If you want to know if the application still response, the end-point is:
 
@@ -124,3 +126,13 @@ And if the application is active, you should see the message:
 ```
 I'm alive!
 ```
+
+
+### Nivel 4 (Challenge):
+- ¿Qué necesita el sistema para poder rastrear los paquetes en tiempo real?
+    - Sería necesario tener el número de trackeo del vehículo que transporta el envío, para consultar a la api del empresa de transporte por
+     es estado del vehículo que lleva ese paquete.
+
+- ¿Cómo implementarías la geolocalización de los paquetes?
+    - Lo implementaría agregando las coordenadas geográficas de los lugares por donde el paquete va circulando, cada vez que cambia de
+    estado.

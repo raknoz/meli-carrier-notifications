@@ -41,7 +41,8 @@ Ensure you have this installed before proceeding further
 I have included an in-memory database for the application. Database schema and sample data for the app is created everytime the app starts, and gets destroyed after the app stops, so the changes made to to the database are persistent only as long as the app is running
 <br/>
 Creation of database schema and data are done using sql scripts that Springs runs automatically.
-To modify the database schema or the data you can modify [schema.sql](./src/main/resources/schema.sql) and [data.sql](./src/main/resources/data.sql) which can be found at `/src/main/resources`
+To modify the database schema or the data you can modify [schema.sql](./src/main/resources/db/changelog/historicalQueryShippingSchema.sql) which can be found at
+ `/src/main/resources/db`
 
 
 
@@ -53,31 +54,31 @@ mvn clean install
 
 ## Logical Business:
 ### The statuses (in order) and sub-statuses (and message of those) available are:
-    * Handling
-        * Null (​"Le notificamos al vendedor sobre tu compra​").
-        * Manufacturing ("El vendedor tendrá listo tu producto pronto y comenzará el envío​").
-    * Ready To Ship
-        * Ready To Print ("El vendedor está preparando tu paquete​").
-        * Printed ("El vendedor debe despachar tu paquete​").
-    * Shipped
-        * Null ("En Camino").
-        * Soon Deliver ("Pronto a ser entregado​").
-        * Waiting For Withdrawal ("En agencia")
-    * Delivered
-         * Null ("Entregado​")
-    * Not Delivered
-        * Lost ("Perdido​")
-        * Stolen ("Robado​")
+
+- Handling
+    - Null (​"Le notificamos al vendedor sobre tu compra​").
+    - Manufacturing ("El vendedor tendrá listo tu producto pronto y comenzará el envío​").
+- Ready To Ship
+    - Ready To Print ("El vendedor está preparando tu paquete​").
+    - Printed ("El vendedor debe despachar tu paquete​").
+- Shipped
+    - Null ("En Camino").
+    - Soon Deliver ("Pronto a ser entregado​").
+    - Waiting For Withdrawal ("En agencia")
+- Delivered
+    - Null ("Entregado​")
+- Not Delivered
+    - Lost ("Perdido​")
+    - Stolen ("Robado​")
 
 
 ### Accessing Application
 
-| Concept               | Type                                              | Description                                                                       |
-| ------                | ------------                                      | ----------                                                                        |
-| H2 Database           | http://localhost:9001/h2-console                  | Driver:`org.h2.Driver` <br/> JDBC URL:`jdbc:h2:mem:demodb
-`<br/> User Name:`sa` <br/> Password: M3li2020  |
-| (POST) package        | http://localhost:9001/api-shipping/package        | End-point to validate the status of a Shipping.                                   |
-| (GET) health          | http://localhost:9001/api-shipping/health         | End-point to know if the application response.                                    |
+| Concept               | Type                                              | Description                                                                                               |
+| ------                | ------------                                      | ----------                                                                                                |
+| H2 Database           | http://localhost:9001/h2-console                  | Driver:`org.h2.Driver` <br/> JDBC URL:`jdbc:h2:mem:demodb` <br/> User Name:`sa` <br/> Password: M3li2020  |
+| (POST) package        | http://localhost:9001/api-shipping/package        | End-point to validate the status of a Shipping.                                                           |
+| (GET) health          | http://localhost:9001/api-shipping/health         | End-point to know if the application response.                                                            |
 
 
 

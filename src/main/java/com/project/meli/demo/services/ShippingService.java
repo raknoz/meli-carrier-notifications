@@ -9,6 +9,7 @@ import com.project.meli.demo.entities.ShippingSubStatus;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.repositories.ShippingRepository;
+import com.project.meli.demo.repositories.StatusRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,22 +20,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class ShippingService {
-    private final Map<ShippingStatus, ShippingSubStatus> nullMapping;
-    private final ShippingRepository shippingRepository;
     private final Logger logger = LoggerFactory.getLogger(ShippingService.class);
+    private final ShippingRepository shippingRepository;
+    private final StatusRepository statusRepository;
 
-    public ShippingService(final ShippingRepository shippingRepository) {
+    public ShippingService(final ShippingRepository shippingRepository, final StatusRepository statusRepository) {
         this.shippingRepository = shippingRepository;
-        nullMapping = new HashMap<>();
-        nullMapping.put(ShippingStatus.HANDLING, ShippingSubStatus.HANDLING_NULL);
-        nullMapping.put(ShippingStatus.SHIPPED, ShippingSubStatus.SHIPPED_NULL);
-        nullMapping.put(ShippingStatus.DELIVERED, ShippingSubStatus.DELIVERED_NULL);
+        this.statusRepository = statusRepository;
     }
 
     /**
@@ -60,7 +57,8 @@ public class ShippingService {
      * @param shippingMovement Entity with the last status of the Shipping.
      */
     public void shippingQueryRegister(final String shippingCode, final ShippingMovement shippingMovement) {
-        shippingRepository.save(new ShippingHistoricalRecord(shippingCode, shippingMovement));
+        shippingRepository.save(new ShippingHistoricalRecord(shippingCode, shippingMovement.getStatus().name(),
+                shippingMovement.getSubStatus().name()));
     }
 
     /**
@@ -101,7 +99,7 @@ public class ShippingService {
         if (StringUtils.isBlank(stateShippingRequestDTO.getStatus())) {
             throw new BadRequestException("Status not defined");
         }
-        final ShippingStatus status = ShippingStatus.wrapperValueOf(stateShippingRequestDTO.getStatus().toUpperCase());
+        final ShippingStatus status = statusRepository.getStatusByName(stateShippingRequestDTO.getStatus());
         return new ShippingMovement(status, getSubStatus(stateShippingRequestDTO.getSubstatus(), status));
     }
 
@@ -113,18 +111,13 @@ public class ShippingService {
      * @return Am Object that contain information of sub-status.
      */
     private ShippingSubStatus getSubStatus(final String subStatus, final ShippingStatus shippingStatus) {
-        ShippingSubStatus shippingSubStatus;
-        if (StringUtils.isNotBlank(subStatus)) {
-            shippingSubStatus = ShippingSubStatus.wrapperValueOf(subStatus.toUpperCase());
-        } else {
-            if (!nullMapping.containsKey(shippingStatus)) {
-                throw new NotStatusException("Status Not found");
-            }
-            shippingSubStatus = nullMapping.get(shippingStatus);
+        Optional<ShippingSubStatus> shippingSubStatus = statusRepository.getSubStatusByNameAndStatus(subStatus, shippingStatus);
+        if (!shippingSubStatus.isPresent()) {
+            throw new NotStatusException("Sub Status Not found");
         }
-        if (!shippingStatus.equals(shippingSubStatus.getStatus())) {
+        if (!shippingStatus.equals(shippingSubStatus.get().getStatus())) {
             throw new BadRequestException("Sub-status does not belong to this status");
         }
-        return shippingSubStatus;
+        return shippingSubStatus.get();
     }
 }

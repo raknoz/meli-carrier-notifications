@@ -28,7 +28,7 @@ public enum ShippingSubStatus {
         try {
             return ShippingSubStatus.valueOf(subStatusName);
         } catch (RuntimeException rex) {
-            throw new NotSubStatusException("Status not found");
+            throw new NotSubStatusException("Sub Status not found");
         }
     }
 

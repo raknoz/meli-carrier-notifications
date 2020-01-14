@@ -32,11 +32,17 @@ public class ShippingHistoricalRecord {
     public ShippingHistoricalRecord() {
     }
 
-    public ShippingHistoricalRecord(final String shippingCode, final ShippingMovement shippingMovement) {
-        this.dateTime = LocalDateTime.now();
+    public ShippingHistoricalRecord(final Long id, final String shippingCode, final String status, final String subStatus,
+                                    final LocalDateTime dateTime) {
+        this.id = id;
         this.shippingCode = shippingCode;
-        this.status = shippingMovement.getStatus().name();
-        this.subStatus = shippingMovement.getSubStatus().name();
+        this.status = status;
+        this.subStatus = subStatus;
+        this.dateTime = dateTime;
+    }
+
+    public ShippingHistoricalRecord(final String shippingCode, final String status, final String subStatus) {
+        new ShippingHistoricalRecord(null, shippingCode, status, subStatus, LocalDateTime.now());
     }
 
     public Long getId() {
@@ -57,25 +63,5 @@ public class ShippingHistoricalRecord {
 
     public LocalDateTime getDateTime() {
         return dateTime;
-    }
-
-    public void setId(final Long id) {
-        this.id = id;
-    }
-
-    public void setShippingCode(final String shippingCode) {
-        this.shippingCode = shippingCode;
-    }
-
-    public void setStatus(final String status) {
-        this.status = status;
-    }
-
-    public void setSubStatus(final String subStatus) {
-        this.subStatus = subStatus;
-    }
-
-    public void setDateTime(final LocalDateTime dateTime) {
-        this.dateTime = dateTime;
     }
 }

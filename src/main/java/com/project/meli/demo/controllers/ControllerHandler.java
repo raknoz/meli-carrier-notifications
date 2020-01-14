@@ -4,7 +4,6 @@ import com.project.meli.demo.entities.ExceptionResponse;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +14,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * ErrorHandling controller.
@@ -24,7 +21,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ControllerHandler extends ResponseEntityExceptionHandler {
     private ExceptionResponse exceptionResponse;
-    private static final String CHAR_SEPARATE_MESSAGES = ", ";
+    private static final String MESSAGE_ERROR_VALIDATE = "Validate error in request";
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ExceptionResponse> handleAllExceptions(final Exception exception, final WebRequest request) {
@@ -51,14 +48,7 @@ public class ControllerHandler extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException exception,
                                                                   final HttpHeaders headers, final HttpStatus status,
                                                                   final WebRequest request) {
-        //Get all errors
-        List<String> errors = exception.getBindingResult()
-                .getFieldErrors()
-                .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .collect(Collectors.toList());
-        exceptionResponse = new ExceptionResponse(LocalDateTime.now(),
-                String.join(CHAR_SEPARATE_MESSAGES, errors), request.getDescription(false));
+        exceptionResponse = new ExceptionResponse(LocalDateTime.now(), MESSAGE_ERROR_VALIDATE, request.getDescription(false));
         return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
     }
 }

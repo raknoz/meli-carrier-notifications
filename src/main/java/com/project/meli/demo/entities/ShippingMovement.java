@@ -16,4 +16,8 @@ public class ShippingMovement {
     public ShippingSubStatus getSubStatus() {
         return subStatus;
     }
+
+    public String getMessage() {
+        return subStatus.getMessage();
+    }
 }

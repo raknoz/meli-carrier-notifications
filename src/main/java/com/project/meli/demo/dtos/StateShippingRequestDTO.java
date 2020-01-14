@@ -1,6 +1,9 @@
 package com.project.meli.demo.dtos;
 
+import javax.validation.constraints.NotEmpty;
+
 public class StateShippingRequestDTO {
+    @NotEmpty(message = "It's mandatory at least a status")
     private String status;
     private String substatus;
 

@@ -32,6 +32,13 @@ public class ShippingHistoricalRecord {
     public ShippingHistoricalRecord() {
     }
 
+    public ShippingHistoricalRecord(final String shippingCode, final ShippingMovement shippingMovement) {
+        this.dateTime = LocalDateTime.now();
+        this.shippingCode = shippingCode;
+        this.status = shippingMovement.getStatus().name();
+        this.subStatus = shippingMovement.getSubStatus().name();
+    }
+
     public Long getId() {
         return id;
     }

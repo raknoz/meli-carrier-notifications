@@ -1,7 +1,7 @@
 #API Shipping status with SpringBoot (java) Backend
 
 ## About
-This is an RESTfull application to validates the status of a shipping, and return a description about last sub-status.
+This is an RESTfull application to validates the status of a shipping and return a description about last sub-status.
 
 ### Technology Stack
 Component         | Technology
@@ -16,18 +16,20 @@ Server Build Tools| Maven(Java)
 PROJECT_FOLDER
 │  README.md
 │  pom.xml
-│  build.gradle
 └──[src]
 │  └──[main]
-│     └──[java]
-│     └──[resources]
-│        │  application.yml #contains springboot cofigurations
-│        │  schema.sql  # Contains DB Script to create tables that executes during the App Startup
-│        │  data.sql    # Contains DB Script to Insert data that executes during the App Startup (after schema.sql)
+│  │   └──[java]
+│  │   └──[resources]
+│  │      └──[db]
+│  │         └──[changelog]
+│  │            └──[schema]
+│  │                historicalQueryShippingSchema.sql  # Contains DB Script to create tables that executes during the App Startup.
+│  │            db.changelog-master.yaml  # It's a Script to orchestra how to create the tables on the database.
+│  │  application.yml #contains springboot configurations
+│  │
 │  └──[test] # Contains the test cases to validate the logic implemented in the application.
 └──[target]              #Java build files, auto-created after running java build: mvn install
-│  └──[classes]
-│     └──[public]
+      └──[classes]
 ```
 
 ## Prerequisites
@@ -49,42 +51,37 @@ To modify the database schema or the data you can modify [schema.sql](./src/main
 mvn clean install
 ```
 
-The statuses (in order) and sub-status available are:
-    ● Handling
-        ○ Null
-        ○ Manufacturing
-    ● Ready To Ship
-        ○ Ready To Print
-        ○ Printed
-    ● Shipped
-        ○ Null
-        ○ Soon Deliver
-        ○ Waiting For Withdrawal
-    ● Delivered
-        ○ Null
-    ● Not Delivered
-        ○ Lost
-        ○ Stolen
-
-And the messages of each sub-statuses are:
-    ● Handling
-        ○ Null (​ “Le notificamos al vendedor sobre tu compra​ ”)
-        ○ Manufacturing (“​ El vendedor tendrá listo tu producto pronto y comenzará el envío​ ”).
-    ● Ready To Ship
-        ○ Ready To Print (“​ El vendedor está preparando tu paquete​ ”)
-        ○ Printed (“​ El vendedor debe despachar tu paquete​ ”)
-    ● Shipped
-        ○ Null (“​ En Camino​ ”)
-        ○ Soon Deliver (“​ Pronto a ser entregado​ ”)
-        ○ Waiting For Withdrawal (“​ En agencia​ ”)
-    ● Delivered
-        ○ Null (“​ Entregado​ ”)
-    ● Not Delivered
-        ○ Lost (“​ Perdido​ ”)
-        ○ Stolen (“​ Robado​ ”)
+## Logical Business:
+### The statuses (in order) and sub-statuses (and message of those) available are:
+    * Handling
+        * Null (​"Le notificamos al vendedor sobre tu compra​").
+        * Manufacturing ("El vendedor tendrá listo tu producto pronto y comenzará el envío​").
+    * Ready To Ship
+        * Ready To Print ("El vendedor está preparando tu paquete​").
+        * Printed ("El vendedor debe despachar tu paquete​").
+    * Shipped
+        * Null ("En Camino").
+        * Soon Deliver ("Pronto a ser entregado​").
+        * Waiting For Withdrawal ("En agencia")
+    * Delivered
+         * Null ("Entregado​")
+    * Not Delivered
+        * Lost ("Perdido​")
+        * Stolen ("Robado​")
 
 
-The application receive a JSON with the next information and structure:
+### Accessing Application
+
+| Concept               | Type                                              | Description                                                                       |
+| ------                | ------------                                      | ----------                                                                        |
+| H2 Database           | http://localhost:9001/h2-console                  | Driver:`org.h2.Driver` <br/> JDBC URL:`jdbc:h2:mem:demodb
+`<br/> User Name:`sa` <br/> Password: M3li2020  |
+| (POST) package        | http://localhost:9001/api-shipping/package        | End-point to validate the status of a Shipping.                                   |
+| (GET) health          | http://localhost:9001/api-shipping/health         | End-point to know if the application response.                                    |
+
+
+
+If you get the status about some shipping have to send a JSON with the next information and structure:
 
 ```json
 {
@@ -101,22 +98,28 @@ The application receive a JSON with the next information and structure:
        {
            "status": "delivered",
            "substatus": null
-       },
+       }
     ]
 }
 ```
 
-And response with the description of the las sub-status:
+And the application response with the description of the last sub-status:
+
 ```json
 {
     "package" : "Entregado"
 }
 ```
 
-## Enabled End-Points
 
-Link Tool supports these configuration parameters:
+If you want to know if the application still response, the end-point is:
 
-| Field    | Type        | Description                                    |
-| ---------|-------------|------------------------------------------------|
-| endpoint | `string`    | **Required:** endpoint for link data fetching. |
+```bash
+curl -X GET --header 'Accept: application/json' 'http://localhost:9001/api-shipping/health'
+```
+
+And if the application is active, you should see the message:
+
+```
+I'm alive!
+```

@@ -1,13 +1,16 @@
 package com.project.meli.demo.services;
 
 import com.project.meli.demo.dtos.ShippingRequestDTO;
+import com.project.meli.demo.entities.ShippingHistoricalRecord;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
+import com.project.meli.demo.repositories.ShippingRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.project.meli.demo.utils.TestUtils.ORDER_SUB_STATUS_LOST_MSG;
@@ -21,12 +24,18 @@ import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoWrongS
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ShippingServiceTest {
 
     @InjectMocks
     private ShippingService shippingService;
+
+    @Mock
+    private ShippingRepository shippingRepository;
 
     @DisplayName("Class: PackageService - method: packages - flow: FAIL (Not Status Exception)")
     @Test
@@ -82,6 +91,8 @@ public class ShippingServiceTest {
     @Test
     public void packageServiceStatusDisorderTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoDisorderStatus();
+        //Given
+        when(shippingRepository.save(any(ShippingHistoricalRecord.class))).thenReturn(mock(ShippingHistoricalRecord.class));
         //When
         final String messageResponse = shippingService.packages(requestDTO);
         //Then
@@ -93,6 +104,8 @@ public class ShippingServiceTest {
     @Test
     public void packageServiceStatusInOrderTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoInOrderStatus();
+        //Given
+        when(shippingRepository.save(any(ShippingHistoricalRecord.class))).thenReturn(mock(ShippingHistoricalRecord.class));
         //When
         final String messageResponse = shippingService.packages(requestDTO);
         //Then

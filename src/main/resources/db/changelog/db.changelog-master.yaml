@@ -1,0 +1,6 @@
+databaseChangeLog:
+
+  ######################
+  # Schema
+  - include:
+      file: db/changelog/schema/historicalQueryShippingSchema.sql

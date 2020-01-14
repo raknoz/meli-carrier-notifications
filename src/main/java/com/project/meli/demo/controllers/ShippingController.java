@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/package")
+@RequestMapping
 public class ShippingController {
     private ShippingService shippingService;
 
@@ -26,7 +26,7 @@ public class ShippingController {
      * @param request Information about the order ID and the states of that.
      * @return A Object with the message of state.
      */
-    @PostMapping
+    @PostMapping("/package")
     public ResponseEntity<ShippingResponseDTO> getLastOrderStatus(@RequestBody final ShippingRequestDTO request) {
         return ResponseEntity.ok(new ShippingResponseDTO(shippingService.packages(request)));
     }

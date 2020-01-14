@@ -138,7 +138,7 @@ public class ShippingControllerTest {
     public void getHealthOkTest() throws Exception {
         //Then
         final ResultActions resultActions =
-                mockMvc.perform(get(BASE_URL + URL_HEALTH)
+                mockMvc.perform(get(URL_HEALTH)
                         .contentType(MediaType.APPLICATION_JSON));
 
         assertNotNull(resultActions);

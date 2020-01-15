@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping
 public class ShippingController {
     private ShippingService shippingService;
     private final Logger logger = LoggerFactory.getLogger(ShippingController.class);
+    private static final String HEALTH_MESSAGE = "I'm alive!";
 
     public ShippingController(final ShippingService shippingService) {
         this.shippingService = shippingService;
@@ -49,7 +49,7 @@ public class ShippingController {
      */
     @GetMapping("/health")
     public ResponseEntity<String> getHealth() {
-        return ResponseEntity.ok(shippingService.getHealth());
+        return ResponseEntity.ok(HEALTH_MESSAGE);
     }
 
     /**

@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -138,8 +139,6 @@ public class ShippingControllerTest {
     @DisplayName("Class: PackageController - method: getHealth - flow: Ok ")
     @Test
     public void getHealthOkTest() throws Exception {
-        //Given
-        when(shippingService.getHealth()).thenReturn(HEALTH_MSG_OK);
         //Then
         final ResultActions resultActions =
                 mockMvc.perform(get(URL_HEALTH)
@@ -190,12 +189,18 @@ public class ShippingControllerTest {
     @DisplayName("Class: PackageController - method: packages - flow: FAIL (Server error)")
     @Test
     public void packageControllerHandleServerErrorTest() throws Exception {
+        //
+        final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("page", "1");
+        params.add("size", "2");
         //Given
-        when(shippingService.getHealth()).thenThrow(new RuntimeException("Expected Error!"));
+        when(shippingService.getStatisticsByDate(anyInt(), anyInt(), any())).thenThrow(new RuntimeException("Expected Error!"));
         //Then
         final ResultActions resultActions =
-                mockMvc.perform(get(URL_HEALTH)
-                        .contentType(MediaType.APPLICATION_JSON));
+                mockMvc.perform(get(URL_STATISTICS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .params(params));
         //Then
         assertNotNull(resultActions);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), resultActions.andReturn().getResponse().getStatus());

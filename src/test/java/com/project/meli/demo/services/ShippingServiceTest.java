@@ -133,16 +133,4 @@ public class ShippingServiceTest {
         assertNotNull(messageResponse);
         assertEquals(SHIPPING_SUB_STATUS_LOST_MSG, messageResponse);
     }
-
-    @DisplayName("Class: PackageService - method: getHealth - flow: OK")
-    @Test
-    public void getHealthTest() {
-        //When
-        final String messageResponse = shippingService.getHealth();
-        //Then
-        assertNotNull(messageResponse);
-        assertEquals(HEALTH_MSG_OK, messageResponse);
-    }
-
-
 }

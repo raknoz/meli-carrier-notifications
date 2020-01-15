@@ -26,7 +26,6 @@ import java.util.Optional;
 @Service
 public class ShippingService {
     private final Logger logger = LoggerFactory.getLogger(ShippingService.class);
-    private static final String HEALTH_MESSAGE = "I'm alive!";
     private final ShippingRepository shippingRepository;
     private final StatusRepository statusRepository;
 
@@ -75,15 +74,6 @@ public class ShippingService {
         final Page<ShippingHistoricalRecord> pagedResult = shippingRepository.findAll(paging);
         return new PagedResult<>(pagedResult.getContent(), pagedResult.getTotalElements(), pagedResult.getNumberOfElements(),
                 pagedResult.getTotalPages());
-    }
-
-    /**
-     * Method to valid about the health of the application.
-     *
-     * @return String with a message.
-     */
-    public String getHealth() {
-        return HEALTH_MESSAGE;
     }
 
     /**

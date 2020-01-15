@@ -8,6 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ShippingRepository extends CrudRepository<ShippingHistoricalRecord, Long> {
-
     Page<ShippingHistoricalRecord> findAll(Pageable pageable);
 }

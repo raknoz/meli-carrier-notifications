@@ -6,6 +6,7 @@ import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingResponseDTO;
 import com.project.meli.demo.dtos.StateShippingRequestDTO;
 import com.project.meli.demo.entities.ShippingHistoricalRecord;
+import com.project.meli.demo.util.PagedResult;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 public class TestUtils {
 
     public static final String VALUE_EMPTY = "";
+    public static final Integer VALUE_ONE = 1;
     public static final String SHIPPING_ID = "28123B";
     public static final String SHIPPING_STATUS_DELIVERED = "delivered";
     public static final String SHIPPING_STATUS_NOT_DELIVERED = "not_delivered";
@@ -80,8 +82,9 @@ public class TestUtils {
         return new ShippingRequestDTO(SHIPPING_ID, inputs);
     }
 
-    public static List<ShippingHistoricalRecord> buildListShippingHistoricalRecord() {
-        return Collections.singletonList(createShippingHistoricalRecord(null));
+    public static PagedResult<ShippingHistoricalRecord> buildListShippingHistoricalRecord() {
+        return new PagedResult<>(Collections.singletonList(createShippingHistoricalRecord(null)),
+                VALUE_ONE.longValue(), VALUE_ONE, VALUE_ONE);
     }
 
     private static ShippingHistoricalRecord createShippingHistoricalRecord(final LocalDateTime localDateTime) {

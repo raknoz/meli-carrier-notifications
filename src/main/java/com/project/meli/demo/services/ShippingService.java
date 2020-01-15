@@ -10,6 +10,7 @@ import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.repositories.ShippingRepository;
 import com.project.meli.demo.repositories.StatusRepository;
+import com.project.meli.demo.util.PagedResult;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,14 +19,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ShippingService {
     private final Logger logger = LoggerFactory.getLogger(ShippingService.class);
+    private final String HEALTH_MESSAGE = "I'm alive";
     private final ShippingRepository shippingRepository;
     private final StatusRepository statusRepository;
 
@@ -64,22 +64,32 @@ public class ShippingService {
     /**
      * Method to return a list of Shipping historical records in pages.
      *
-     * @param pageNo   Number of the page to return.
-     * @param pageSize Number of elements by page.
-     * @param date     Date to filter the data.
+     * @param page Number of the page to return.
+     * @param size Number of elements by page.
+     * @param date Date to filter the data.
      * @return List with results of Statistics
      */
-    public List<ShippingHistoricalRecord> getStatisticsByDate(final Integer pageNo, final Integer pageSize, final String date) {
-        final Pageable paging = PageRequest.of(pageNo, pageSize);
+    public PagedResult<ShippingHistoricalRecord> getStatisticsByDate(final Integer page, final Integer size, final String date) {
+        final Pageable paging = PageRequest.of(page, size);
         final Page<ShippingHistoricalRecord> pagedResult = shippingRepository.findAll(paging);
-        return new ArrayList<>(pagedResult.getContent());
+        return new PagedResult<>(pagedResult.getContent(), pagedResult.getTotalElements(), pagedResult.getNumberOfElements(),
+                pagedResult.getTotalPages());
+    }
+
+    /**
+     * Method to valid about the health of the application.
+     *
+     * @return String with a message.
+     */
+    public String getHealth() {
+        return HEALTH_MESSAGE;
     }
 
     /**
      * Method to get the max status and sub-status of a list.
      *
      * @param request Object with the list of statues.
-     * @return A object with the max status and sub-status.
+     * @return A object with the max status and max sub-status.
      */
     private ShippingMovement sortingByShippingStatus(final ShippingRequestDTO request) {
         return request.getInputs().stream()

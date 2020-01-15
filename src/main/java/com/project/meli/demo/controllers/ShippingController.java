@@ -5,6 +5,7 @@ import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingResponseDTO;
 import com.project.meli.demo.entities.ShippingHistoricalRecord;
 import com.project.meli.demo.services.ShippingService;
+import com.project.meli.demo.util.PagedResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -48,21 +49,21 @@ public class ShippingController {
      */
     @GetMapping("/health")
     public ResponseEntity<String> getHealth() {
-        return ResponseEntity.ok("I am alive!");
+        return ResponseEntity.ok(shippingService.getHealth());
     }
 
     /**
      * Method to get information about the historical queries of shipping status.
      *
-     * @param pageNo   Number of page to consult.
-     * @param pageSize How many elements give in the page.
+     * @param page Number of page to consult.
+     * @param size How many elements give in the page.
      * @return List of elements.
      */
     @GetMapping("/statistics")
-    public ResponseEntity<List<ShippingHistoricalRecord>> getStatisticsByDate(@RequestParam(name = "page", defaultValue = "0") Integer pageNo,
-                                                                              @RequestParam(name = "size", defaultValue = "10") Integer pageSize) {
-
-        return new ResponseEntity<>(shippingService.getStatisticsByDate(pageNo, pageSize, null), HttpStatus.OK);
+    public ResponseEntity<PagedResult<ShippingHistoricalRecord>> getStatisticsByDate(
+            @RequestParam(name = "page", defaultValue = "0") Integer page,
+            @RequestParam(name = "size", defaultValue = "10") Integer size) {
+        return new ResponseEntity<>(shippingService.getStatisticsByDate(page, size, null), HttpStatus.OK);
     }
 
 

@@ -136,11 +136,13 @@ public class ShippingControllerTest {
     @DisplayName("Class: PackageController - method: getHealth - flow: Ok ")
     @Test
     public void getHealthOkTest() throws Exception {
+        //Given
+        when(shippingService.getHealth()).thenReturn(HEALTH_MSG_OK);
         //Then
         final ResultActions resultActions =
                 mockMvc.perform(get(URL_HEALTH)
                         .contentType(MediaType.APPLICATION_JSON));
-
+        //Then
         assertNotNull(resultActions);
         assertEquals(HttpStatus.OK.value(), resultActions.andReturn().getResponse().getStatus());
         assertEquals(HEALTH_MSG_OK, resultActions.andReturn().getResponse().getContentAsString());

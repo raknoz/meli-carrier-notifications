@@ -59,8 +59,8 @@ public class ShippingController {
      * @return List of elements.
      */
     @GetMapping("/statistics")
-    public ResponseEntity<List<ShippingHistoricalRecord>> getStatisticsByDate(@RequestParam(defaultValue = "0") Integer pageNo,
-                                                                              @RequestParam(defaultValue = "10") Integer pageSize) {
+    public ResponseEntity<List<ShippingHistoricalRecord>> getStatisticsByDate(@RequestParam(name = "page", defaultValue = "0") Integer pageNo,
+                                                                              @RequestParam(name = "size", defaultValue = "10") Integer pageSize) {
 
         return new ResponseEntity<>(shippingService.getStatisticsByDate(pageNo, pageSize, null), HttpStatus.OK);
     }

@@ -7,7 +7,6 @@ import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
 import com.project.meli.demo.repositories.ShippingRepository;
 import com.project.meli.demo.repositories.StatusRepository;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,9 +15,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.project.meli.demo.utils.TestUtils.ORDER_SUB_STATUS_LOST_MSG;
+import static com.project.meli.demo.utils.TestUtils.SHIPPING_SUB_STATUS_LOST_MSG;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoBlankStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoDisorderStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoEmptyStatus;
@@ -44,7 +42,7 @@ public class ShippingServiceTest {
     private StatusRepository statusRepository;
 
     @BeforeEach
-    public void setUp(){
+    public void setUp() {
         statusRepository = new StatusRepository();
     }
 
@@ -108,7 +106,7 @@ public class ShippingServiceTest {
         final String messageResponse = shippingService.packages(requestDTO);
         //Then
         assertNotNull(messageResponse);
-        assertEquals(ORDER_SUB_STATUS_LOST_MSG, messageResponse);
+        assertEquals(SHIPPING_SUB_STATUS_LOST_MSG, messageResponse);
     }
 
     @DisplayName("Class: PackageService - method: packages - flow: OK")
@@ -121,6 +119,6 @@ public class ShippingServiceTest {
         final String messageResponse = shippingService.packages(requestDTO);
         //Then
         assertNotNull(messageResponse);
-        assertEquals(ORDER_SUB_STATUS_LOST_MSG, messageResponse);
+        assertEquals(SHIPPING_SUB_STATUS_LOST_MSG, messageResponse);
     }
 }

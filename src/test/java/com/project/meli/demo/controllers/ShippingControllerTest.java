@@ -19,11 +19,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static com.project.meli.demo.utils.TestUtils.HEALTH_MSG_OK;
-import static com.project.meli.demo.utils.TestUtils.ORDER_SUB_STATUS_SHIPPED_NULL_MSG;
+import static com.project.meli.demo.utils.TestUtils.SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG;
+import static com.project.meli.demo.utils.TestUtils.buildListShippingHistoricalRecord;
+import static com.project.meli.demo.utils.TestUtils.objectResponseAsJson;
 import static com.project.meli.demo.utils.TestUtils.packageRequestDtoAsJson;
 import static com.project.meli.demo.utils.TestUtils.packageResponseDtoAsJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,10 +42,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class ShippingControllerTest {
     private static final String BASE_URL = "/package";
     private static final String URL_HEALTH = "/health";
+    private static final String URL_STATISTICS = "/statistics";
 
     @Autowired
-    private WebApplicationContext wac;
-
     private MockMvc mockMvc;
 
     @MockBean
@@ -52,7 +53,6 @@ public class ShippingControllerTest {
     @BeforeEach
     void setup() {
         MockitoAnnotations.initMocks(this);
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
     }
 
     @DisplayName("Class: PackageController - method: packages - flow: FAIL (Bad Request)")
@@ -116,10 +116,10 @@ public class ShippingControllerTest {
     @Test
     public void packageControllerOkTest() throws Exception {
         //
-        final String messageExpected = packageResponseDtoAsJson(ORDER_SUB_STATUS_SHIPPED_NULL_MSG);
+        final String messageExpected = packageResponseDtoAsJson(SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG);
 
         //Given
-        when(shippingService.packages(any(ShippingRequestDTO.class))).thenReturn(ORDER_SUB_STATUS_SHIPPED_NULL_MSG);
+        when(shippingService.packages(any(ShippingRequestDTO.class))).thenReturn(SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG);
 
         //Then
         final ResultActions resultActions =
@@ -146,4 +146,25 @@ public class ShippingControllerTest {
         assertEquals(HEALTH_MSG_OK, resultActions.andReturn().getResponse().getContentAsString());
     }
 
+    @DisplayName("Class: PackageController - method: getStatisticsByDate - flow: Ok ")
+    @Test
+    public void getStatisticsByDateOkTest() throws Exception {
+        //
+        final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("page", "1");
+        params.add("size", "2");
+        final String responseExpected = objectResponseAsJson(buildListShippingHistoricalRecord());
+        //When
+        when(shippingService.getStatisticsByDate(1, 2, null)).thenReturn(buildListShippingHistoricalRecord());
+
+        //Then
+        final ResultActions resultActions =
+                mockMvc.perform(get(URL_STATISTICS)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .params(params));
+
+        assertNotNull(resultActions);
+        assertEquals(HttpStatus.OK.value(), resultActions.andReturn().getResponse().getStatus());
+        assertEquals(responseExpected, resultActions.andReturn().getResponse().getContentAsString());
+    }
 }

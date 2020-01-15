@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingResponseDTO;
 import com.project.meli.demo.dtos.StateShippingRequestDTO;
+import com.project.meli.demo.entities.ShippingHistoricalRecord;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,19 +15,21 @@ import java.util.List;
 public class TestUtils {
 
     public static final String VALUE_EMPTY = "";
-    public static final String ORDER_ID = "28123B";
-    public static final String ORDER_STATUS_DELIVERED = "delivered";
-    public static final String ORDER_STATUS_NOT_DELIVERED = "not_delivered";
-    public static final String ORDER_STATUS_SHIPPED = "shipped";
-    public static final String ORDER_STATUS_READY_TO_SHIP = "ready_to_ship";
-    public static final String ORDER_STATUS_WRONG = "almost-already";
-    public static final String ORDER_SUB_STATUS_NULL = null;
-    public static final String ORDER_SUB_STATUS_LOST = "lost";
-    public static final String ORDER_SUB_STATUS_PRINTED = "printed";
-    public static final String ORDER_SUB_STATUS_WRONG = "printed_in_color";
-    public static final String ORDER_SUB_STATUS_SHIPPED_NULL_MSG = "En Camino";
-    public static final String ORDER_SUB_STATUS_LOST_MSG = "Perdido";
+    public static final String SHIPPING_ID = "28123B";
+    public static final String SHIPPING_STATUS_DELIVERED = "delivered";
+    public static final String SHIPPING_STATUS_NOT_DELIVERED = "not_delivered";
+    public static final String SHIPPING_STATUS_SHIPPED = "shipped";
+    public static final String SHIPPING_STATUS_READY_TO_SHIP = "ready_to_ship";
+    public static final String SHIPPING_STATUS_WRONG = "almost-already";
+    public static final String SHIPPING_SUB_STATUS_NULL = null;
+    public static final String SHIPPING_SUB_STATUS_LOST = "lost";
+    public static final String SHIPPING_SUB_STATUS_PRINTED = "printed";
+    public static final String SHIPPING_SUB_STATUS_WRONG = "printed_in_color";
+    public static final String SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG = "En Camino";
+    public static final String SHIPPING_SUB_STATUS_LOST_MSG = "Perdido";
     public static final String HEALTH_MSG_OK = "I am alive!";
+    private static final Long HISTORICAL_SHIPPING_ID = 123L;
+    private static final String HISTORICAL_SHIPPING_CODE = "123456H";
 
     public static String packageRequestDtoAsJson() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(buildPackageRequestDto());
@@ -35,11 +39,12 @@ public class TestUtils {
         return new ObjectMapper().writeValueAsString(buildPackageResponseDto(message));
     }
 
+    public static String objectResponseAsJson(final Object value) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(value);
+    }
+
     public static ShippingRequestDTO buildPackageRequestDtoEmptyStatus() {
-        final ShippingRequestDTO dto = new ShippingRequestDTO();
-        dto.setId(ORDER_ID);
-        dto.setInputs(Collections.emptyList());
-        return dto;
+        return new ShippingRequestDTO(SHIPPING_ID, Collections.emptyList());
     }
 
     public static ShippingRequestDTO buildPackageRequestDtoBlankStatus() {
@@ -47,44 +52,48 @@ public class TestUtils {
     }
 
     public static ShippingRequestDTO buildPackageRequestDtoWrongStatus() {
-        return getPackageRequestDTO(ORDER_STATUS_WRONG, VALUE_EMPTY);
+        return getPackageRequestDTO(SHIPPING_STATUS_WRONG, VALUE_EMPTY);
     }
 
     public static ShippingRequestDTO buildPackageRequestDtoWrongSubStatus() {
-        return getPackageRequestDTO(ORDER_STATUS_DELIVERED, ORDER_SUB_STATUS_WRONG);
+        return getPackageRequestDTO(SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_WRONG);
     }
 
     public static ShippingRequestDTO buildPackageRequestDtoSubStatusNotBelongStatus() {
-        return getPackageRequestDTO(ORDER_STATUS_DELIVERED, ORDER_SUB_STATUS_PRINTED);
+        return getPackageRequestDTO(SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_PRINTED);
     }
 
     public static ShippingRequestDTO buildPackageRequestDtoDisorderStatus() {
         final List<StateShippingRequestDTO> inputs = new ArrayList<>();
-        inputs.add(buildStateOrderRequestDto(ORDER_STATUS_NOT_DELIVERED, ORDER_SUB_STATUS_LOST));
-        inputs.add(buildStateOrderRequestDto(ORDER_STATUS_SHIPPED, null));
-        inputs.add(buildStateOrderRequestDto(ORDER_STATUS_READY_TO_SHIP, ORDER_SUB_STATUS_PRINTED));
-        final ShippingRequestDTO dto = new ShippingRequestDTO();
-        dto.setId(ORDER_ID);
-        dto.setInputs(inputs);
-        return dto;
+        inputs.add(buildStateShippingRequestDto(SHIPPING_STATUS_NOT_DELIVERED, SHIPPING_SUB_STATUS_LOST));
+        inputs.add(buildStateShippingRequestDto(SHIPPING_STATUS_SHIPPED, null));
+        inputs.add(buildStateShippingRequestDto(SHIPPING_STATUS_READY_TO_SHIP, SHIPPING_SUB_STATUS_PRINTED));
+
+        return new ShippingRequestDTO(SHIPPING_ID, inputs);
     }
 
     public static ShippingRequestDTO buildPackageRequestDtoInOrderStatus() {
         final List<StateShippingRequestDTO> inputs = new ArrayList<>();
-        inputs.add(buildStateOrderRequestDto(ORDER_STATUS_READY_TO_SHIP, ORDER_SUB_STATUS_PRINTED));
-        inputs.add(buildStateOrderRequestDto(ORDER_STATUS_SHIPPED, null));
-        inputs.add(buildStateOrderRequestDto(ORDER_STATUS_NOT_DELIVERED, ORDER_SUB_STATUS_LOST));
-        final ShippingRequestDTO dto = new ShippingRequestDTO();
-        dto.setId(ORDER_ID);
-        dto.setInputs(inputs);
-        return dto;
+        inputs.add(buildStateShippingRequestDto(SHIPPING_STATUS_READY_TO_SHIP, SHIPPING_SUB_STATUS_PRINTED));
+        inputs.add(buildStateShippingRequestDto(SHIPPING_STATUS_SHIPPED, null));
+        inputs.add(buildStateShippingRequestDto(SHIPPING_STATUS_NOT_DELIVERED, SHIPPING_SUB_STATUS_LOST));
+        return new ShippingRequestDTO(SHIPPING_ID, inputs);
+    }
+
+    public static List<ShippingHistoricalRecord> buildListShippingHistoricalRecord() {
+        return Collections.singletonList(createShippingHistoricalRecord(null));
+    }
+
+    private static ShippingHistoricalRecord createShippingHistoricalRecord(final LocalDateTime localDateTime) {
+        return new ShippingHistoricalRecord(
+                HISTORICAL_SHIPPING_ID, HISTORICAL_SHIPPING_CODE, SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_LOST, localDateTime);
     }
 
     private static ShippingRequestDTO buildPackageRequestDto() {
-        return getPackageRequestDTO(ORDER_STATUS_DELIVERED, ORDER_SUB_STATUS_NULL);
+        return getPackageRequestDTO(SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_NULL);
     }
 
-    private static StateShippingRequestDTO buildStateOrderRequestDto(final String status, final String subStatus) {
+    private static StateShippingRequestDTO buildStateShippingRequestDto(final String status, final String subStatus) {
         return new StateShippingRequestDTO(status, subStatus);
     }
 
@@ -93,9 +102,6 @@ public class TestUtils {
     }
 
     private static ShippingRequestDTO getPackageRequestDTO(final String status, final String subStatus) {
-        final ShippingRequestDTO dto = new ShippingRequestDTO();
-        dto.setId(TestUtils.ORDER_ID);
-        dto.setInputs(Collections.singletonList(buildStateOrderRequestDto(status, subStatus)));
-        return dto;
+        return new ShippingRequestDTO(SHIPPING_ID, Collections.singletonList(buildStateShippingRequestDto(status, subStatus)));
     }
 }

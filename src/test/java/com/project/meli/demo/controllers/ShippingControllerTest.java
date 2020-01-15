@@ -21,12 +21,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static com.project.meli.demo.utils.TestUtils.HEALTH_MSG_OK;
 import static com.project.meli.demo.utils.TestUtils.SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG;
 import static com.project.meli.demo.utils.TestUtils.buildListShippingHistoricalRecord;
 import static com.project.meli.demo.utils.TestUtils.objectResponseAsJson;
 import static com.project.meli.demo.utils.TestUtils.packageRequestDtoAsJson;
+import static com.project.meli.demo.utils.TestUtils.packageRequestDtoFailAsJson;
 import static com.project.meli.demo.utils.TestUtils.packageResponseDtoAsJson;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -70,7 +72,7 @@ public class ShippingControllerTest {
                         .content(packageRequestDtoAsJson()));
 
         assertNotNull(resultActions);
-        assertEquals(resultActions.andReturn().getResponse().getStatus(), HttpStatus.BAD_REQUEST.value());
+        assertEquals(HttpStatus.BAD_REQUEST.value(), resultActions.andReturn().getResponse().getStatus());
         assertTrue(resultActions.andReturn().getResolvedException() instanceof BadRequestException);
     }
 
@@ -89,7 +91,7 @@ public class ShippingControllerTest {
                         .content(packageRequestDtoAsJson()));
 
         assertNotNull(resultActions);
-        assertEquals(resultActions.andReturn().getResponse().getStatus(), HttpStatus.NOT_FOUND.value());
+        assertEquals(HttpStatus.NOT_FOUND.value(), resultActions.andReturn().getResponse().getStatus());
         assertTrue(resultActions.andReturn().getResolvedException() instanceof NotStatusException);
     }
 
@@ -108,7 +110,7 @@ public class ShippingControllerTest {
                         .content(packageRequestDtoAsJson()));
 
         assertNotNull(resultActions);
-        assertEquals(resultActions.andReturn().getResponse().getStatus(), HttpStatus.NOT_FOUND.value());
+        assertEquals(HttpStatus.NOT_FOUND.value(), resultActions.andReturn().getResponse().getStatus());
         assertTrue(resultActions.andReturn().getResolvedException() instanceof NotSubStatusException);
     }
 
@@ -168,5 +170,35 @@ public class ShippingControllerTest {
         assertNotNull(resultActions);
         assertEquals(HttpStatus.OK.value(), resultActions.andReturn().getResponse().getStatus());
         assertEquals(responseExpected, resultActions.andReturn().getResponse().getContentAsString());
+    }
+
+    @DisplayName("Class: PackageController - method: packages - flow: FAIL (Invalid request)")
+    @Test
+    public void packageControllerHandleMethodArgumentNotValidExceptionTest() throws Exception {
+        //When
+        final ResultActions resultActions =
+                mockMvc.perform(post(BASE_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(packageRequestDtoFailAsJson()));
+        //Then
+        assertNotNull(resultActions);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), resultActions.andReturn().getResponse().getStatus());
+        assertTrue(resultActions.andReturn().getResolvedException() instanceof MethodArgumentNotValidException);
+    }
+
+    @DisplayName("Class: PackageController - method: packages - flow: FAIL (Server error)")
+    @Test
+    public void packageControllerHandleServerErrorTest() throws Exception {
+        //Given
+        when(shippingService.getHealth()).thenThrow(new RuntimeException("Expected Error!"));
+        //Then
+        final ResultActions resultActions =
+                mockMvc.perform(get(URL_HEALTH)
+                        .contentType(MediaType.APPLICATION_JSON));
+        //Then
+        assertNotNull(resultActions);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), resultActions.andReturn().getResponse().getStatus());
+        assertTrue(resultActions.andReturn().getResolvedException() instanceof RuntimeException);
     }
 }

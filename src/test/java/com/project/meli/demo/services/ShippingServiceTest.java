@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.project.meli.demo.utils.TestUtils.HEALTH_MSG_OK;
 import static com.project.meli.demo.utils.TestUtils.SHIPPING_SUB_STATUS_LOST_MSG;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoBlankStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoDisorderStatus;
@@ -23,6 +24,7 @@ import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoEmptyS
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoInOrderStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoSubStatusNotBelongStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoWrongStatus;
+import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoWrongStatusAndSubStatusNull;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoWrongSubStatus;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -96,6 +98,16 @@ public class ShippingServiceTest {
         }).isInstanceOf(BadRequestException.class);
     }
 
+    @DisplayName("Class: PackageService - method: packages - flow: FAIL (Status not contain a null sub-status")
+    @Test
+    public void packageServiceStatusNotContainsSubStatusNullTest() {
+        final ShippingRequestDTO requestDTO = buildPackageRequestDtoWrongStatusAndSubStatusNull();
+        //When
+        assertThatThrownBy(() -> {
+            shippingService.packages(requestDTO);
+        }).isInstanceOf(NotSubStatusException.class);
+    }
+
     @DisplayName("Class: PackageService - method: packages - flow: OK")
     @Test
     public void packageServiceStatusDisorderTest() {
@@ -121,4 +133,16 @@ public class ShippingServiceTest {
         assertNotNull(messageResponse);
         assertEquals(SHIPPING_SUB_STATUS_LOST_MSG, messageResponse);
     }
+
+    @DisplayName("Class: PackageService - method: getHealth - flow: OK")
+    @Test
+    public void getHealthTest() {
+        //When
+        final String messageResponse = shippingService.getHealth();
+        //Then
+        assertNotNull(messageResponse);
+        assertEquals(HEALTH_MSG_OK, messageResponse);
+    }
+
+
 }

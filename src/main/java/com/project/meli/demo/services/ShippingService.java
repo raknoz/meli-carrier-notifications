@@ -8,6 +8,7 @@ import com.project.meli.demo.entities.ShippingStatus;
 import com.project.meli.demo.entities.ShippingSubStatus;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
+import com.project.meli.demo.exceptions.NotSubStatusException;
 import com.project.meli.demo.repositories.ShippingRepository;
 import com.project.meli.demo.repositories.StatusRepository;
 import com.project.meli.demo.util.PagedResult;
@@ -25,7 +26,7 @@ import java.util.Optional;
 @Service
 public class ShippingService {
     private final Logger logger = LoggerFactory.getLogger(ShippingService.class);
-    private final String HEALTH_MESSAGE = "I'm alive";
+    private static final String HEALTH_MESSAGE = "I'm alive!";
     private final ShippingRepository shippingRepository;
     private final StatusRepository statusRepository;
 
@@ -123,7 +124,7 @@ public class ShippingService {
     private ShippingSubStatus getSubStatus(final String subStatus, final ShippingStatus shippingStatus) {
         Optional<ShippingSubStatus> shippingSubStatus = statusRepository.getSubStatusByNameAndStatus(subStatus, shippingStatus);
         if (!shippingSubStatus.isPresent()) {
-            throw new NotStatusException("Sub Status Not found");
+            throw new NotSubStatusException("Sub Status Not found");
         }
         if (!shippingStatus.equals(shippingSubStatus.get().getStatus())) {
             throw new BadRequestException("Sub-status does not belong to this status");

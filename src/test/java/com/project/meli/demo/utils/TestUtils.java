@@ -29,7 +29,7 @@ public class TestUtils {
     public static final String SHIPPING_SUB_STATUS_WRONG = "printed_in_color";
     public static final String SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG = "En Camino";
     public static final String SHIPPING_SUB_STATUS_LOST_MSG = "Perdido";
-    public static final String HEALTH_MSG_OK = "I am alive!";
+    public static final String HEALTH_MSG_OK = "I'm alive!";
     private static final Long HISTORICAL_SHIPPING_ID = 123L;
     private static final String HISTORICAL_SHIPPING_CODE = "123456H";
 
@@ -65,6 +65,10 @@ public class TestUtils {
         return getPackageRequestDTO(SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_PRINTED);
     }
 
+    public static ShippingRequestDTO buildPackageRequestDtoWrongStatusAndSubStatusNull() {
+        return getPackageRequestDTO(SHIPPING_STATUS_READY_TO_SHIP, null);
+    }
+
     public static ShippingRequestDTO buildPackageRequestDtoDisorderStatus() {
         final List<StateShippingRequestDTO> inputs = new ArrayList<>();
         inputs.add(buildStateShippingRequestDto(SHIPPING_STATUS_NOT_DELIVERED, SHIPPING_SUB_STATUS_LOST));
@@ -85,6 +89,15 @@ public class TestUtils {
     public static PagedResult<ShippingHistoricalRecord> buildListShippingHistoricalRecord() {
         return new PagedResult<>(Collections.singletonList(createShippingHistoricalRecord(null)),
                 VALUE_ONE.longValue(), VALUE_ONE, VALUE_ONE);
+    }
+
+    public static String packageRequestDtoFailAsJson() throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(getPackageRequestFailDTO());
+    }
+
+    private static ShippingRequestDTO getPackageRequestFailDTO() {
+        return new ShippingRequestDTO(null,
+                Collections.singletonList(buildStateShippingRequestDto(SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_NULL)));
     }
 
     private static ShippingHistoricalRecord createShippingHistoricalRecord(final LocalDateTime localDateTime) {

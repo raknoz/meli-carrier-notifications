@@ -45,7 +45,6 @@ To modify the database schema or the data you can modify [schema.sql](./src/main
  `/src/main/resources/db`
 
 
-
 ### Build Backend (SpringBoot Java)
 ```bash
 # Maven Build : Navigate to the root folder where pom.xml is present
@@ -74,7 +73,7 @@ mvn clean install
 
 ### Accessing Application
 
-| Concept               | Type                                              | Description                                                                                               |
+| Concept               | URL                                               | Description                                                                                               |
 | ------                | ------------                                      | ----------                                                                                                |
 | H2 Database           | http://localhost:9001/h2-console                  | Driver:`org.h2.Driver` <br/> JDBC URL:`jdbc:h2:mem:demodb` <br/> User Name:`sa` <br/> Password: M3li2020  |
 | (POST) package        | http://localhost:9001/api-shipping/package        | End-point to validate the status of a Shipping.                                                           |
@@ -82,7 +81,7 @@ mvn clean install
 | (GET) statistics      | http://localhost:9001/api-shipping/statistics     | End-point to query information about the movements of shipments.                                          |
 
 
-### Package
+### Package (POST)
 If you get the status about some shipping have to send a JSON in the body with the next information and structure:
 
 ```json
@@ -113,7 +112,7 @@ And the application response with the description of the last sub-status:
 }
 ```
 
-### Health
+### Health (GET)
 
 If you want to know if the application still response, the end-point is:
 

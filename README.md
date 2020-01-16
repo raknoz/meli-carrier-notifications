@@ -13,8 +13,8 @@ Server Build Tools  | Maven(Java)
 Server Hosted       | [heroku](https://www.heroku.com/)
 
 ### Heroku hosted
-The url of the application to connect with the API is:
-[https://app-shipping-status.herokuapp.com/api-shipping]
+The application is hosted in:
+https://app-shipping-status.herokuapp.com/api-shipping
 
 ## Folder Structure
 ```bash
@@ -46,7 +46,7 @@ Ensure you have this installed before proceeding further
 I have included an in-memory database for the application. Database schema and sample data for the app is created everytime the app starts, and gets destroyed after the app stops, so the changes made to to the database are persistent only as long as the app is running
 <br/>
 Creation of database schema and data are done using sql scripts that Springs runs automatically.
-To modify the database schema or the data you can modify [schema.sql](./src/main/resources/db/changelog/historicalQueryShippingSchema.sql) which can be found at
+To modify the database schema or the data you can modify [schema.sql](https://github.com/raknoz/meli-carrier-notifications/tree/master/src/main/resources/db/changelog/schema/historicalQueryShippingSchema.sql) which can be found at
  `/src/main/resources/db`
 
 
@@ -91,8 +91,15 @@ mvn clean install
 This endpoint allows to get the last status about some shipping. The request-body(JSON) to send to the endpoint is:
 
 ```
-id      ->  identifier of shipping
-inputs  -> List of status of shipping
+{
+"id" : <string>         -> shipping's identifier
+"inputs":[            -> List of status of shipping
+        {
+            "status": <string>,
+            "substatus": <string or null
+        }
+       ]
+}
 ```
 ### Request Example
 ```json

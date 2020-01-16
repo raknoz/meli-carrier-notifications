@@ -5,9 +5,9 @@ import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingResponseDTO;
 import com.project.meli.demo.dtos.ShippingStatisticsResponseDTO;
 import com.project.meli.demo.services.ShippingService;
+import com.project.meli.demo.services.ShippingStatisticsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,9 +24,11 @@ public class ShippingController {
     private static final String HEALTH_MESSAGE = "I'm alive!";
     private final Logger logger = LoggerFactory.getLogger(ShippingController.class);
     private ShippingService shippingService;
+    private ShippingStatisticsService shippingStatisticsService;
 
-    public ShippingController(final ShippingService shippingService) {
+    public ShippingController(final ShippingService shippingService, final ShippingStatisticsService shippingStatisticsService) {
         this.shippingService = shippingService;
+        this.shippingStatisticsService = shippingStatisticsService;
     }
 
     /**
@@ -59,9 +61,9 @@ public class ShippingController {
      * @return Object with information about the queries to application.
      */
     @GetMapping("/statistics")
-    public ResponseEntity<ShippingStatisticsResponseDTO> getStatisticsByDate(@RequestParam("dateFrom") final String dateFrom,
-                                                    @RequestParam("dateTo")  final String dateTo) {
-        final ShippingStatisticsResponseDTO statisticsResponse = shippingService.getStatisticsByDate(dateFrom, dateTo);
+    public ResponseEntity<ShippingStatisticsResponseDTO> getStatisticsByDate(@RequestParam("date_from") final String dateFrom,
+                                                    @RequestParam("date_to")  final String dateTo) {
+        final ShippingStatisticsResponseDTO statisticsResponse = shippingStatisticsService.getStatisticsByDate(dateFrom, dateTo);
         return ResponseEntity.ok(statisticsResponse);
     }
 

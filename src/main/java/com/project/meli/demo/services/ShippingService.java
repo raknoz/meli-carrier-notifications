@@ -1,44 +1,33 @@
 package com.project.meli.demo.services;
 
 import com.project.meli.demo.dtos.ShippingRequestDTO;
-import com.project.meli.demo.dtos.ShippingStatisticsResponseDTO;
 import com.project.meli.demo.dtos.StateShippingRequestDTO;
 import com.project.meli.demo.entities.ShippingHistoricalEntity;
 import com.project.meli.demo.entities.ShippingMovement;
-import com.project.meli.demo.entities.ShippingStatisticEntity;
 import com.project.meli.demo.entities.ShippingStatus;
 import com.project.meli.demo.entities.ShippingSubStatus;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
-import com.project.meli.demo.repositories.ShippingRepository;
-import com.project.meli.demo.repositories.ShippingStatisticRepository;
 import com.project.meli.demo.repositories.StatusRepository;
-import com.project.meli.demo.util.MapperUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Optional;
-
-import static com.project.meli.demo.util.DateUtils.parseStringToLocalDateTime;
 
 @Service
 public class ShippingService {
     private final Logger logger = LoggerFactory.getLogger(ShippingService.class);
-    private final ShippingRepository shippingRepository;
     private final StatusRepository statusRepository;
-    private final ShippingStatisticRepository shippingStatisticRepository;
+    private final ShippingHistoricalService shippingHistoricalService;
 
-    public ShippingService(final ShippingRepository shippingRepository, final StatusRepository statusRepository,
-                           final ShippingStatisticRepository shippingStatisticRepository) {
-        this.shippingRepository = shippingRepository;
+
+    public ShippingService(final ShippingHistoricalService shippingHistoricalService, final StatusRepository statusRepository) {
+        this.shippingHistoricalService = shippingHistoricalService;
         this.statusRepository = statusRepository;
-        this.shippingStatisticRepository = shippingStatisticRepository;
     }
 
     /**
@@ -48,51 +37,12 @@ public class ShippingService {
      * @return A string that contain the message of the last sub-status.
      */
     public String packages(final ShippingRequestDTO request) {
-        final ShippingHistoricalEntity shippingHistorical = shippingQueryRegister(request.getId());
+        final ShippingHistoricalEntity shippingHistorical = shippingHistoricalService.shippingQueryRegister(request.getId());
         final ShippingMovement shippingMovement = sortingByShippingStatus(request);
         logger.debug(String.format("Shipping code: %s, is in status: %s -> %s", request.getId(),
-                shippingMovement.getStatus().getDescription(), shippingMovement.getSubStatus().getDescription()));
-        shippingQueryRegister(shippingHistorical, shippingMovement);
+                shippingMovement.getStatus().toString(), shippingMovement.getSubStatus().toString()));
+        shippingHistoricalService.shippingQueryRegister(shippingHistorical, shippingMovement);
         return shippingMovement.getMessage();
-    }
-
-    /**
-     * Service to save information when start the process.
-     *
-     * @param shippingCode Id of the shipping.
-     * @return Object persisted on the dataBase.
-     */
-    public ShippingHistoricalEntity shippingQueryRegister(final String shippingCode) {
-        logger.info(String.format("Save query of shipping code: %s", shippingCode));
-        return shippingRepository.save(new ShippingHistoricalEntity(shippingCode, null, null));
-    }
-
-    /**
-     * Service to save in historical_query_shipping, the information about the last status.
-     *
-     * @param shippingHistorical Object to update status and save it.
-     * @param shippingMovement   Entity with the last status of the Shipping.
-     */
-    public void shippingQueryRegister(final ShippingHistoricalEntity shippingHistorical, final ShippingMovement shippingMovement) {
-        logger.info(String.format("Update register of shipping code: %s", shippingHistorical.getShippingCode()));
-        shippingHistorical.setStatus(shippingMovement.getStatus().getDescription());
-        shippingHistorical.setSubStatus(shippingMovement.getSubStatus().getDescription());
-        shippingHistorical.setDateUpdate(LocalDateTime.now());
-        shippingRepository.save(shippingHistorical);
-    }
-
-    /**
-     * Method to return a list of Shipping historical records in pages.
-     *
-     * @param fromDateStr Initial date to filter the report.
-     * @param toDateStr   Final date to filter the report.
-     * @return Object with results of Statistics
-     */
-    public ShippingStatisticsResponseDTO getStatisticsByDate(final String fromDateStr, final String toDateStr) {
-        final LocalDate fromDate = parseStringToLocalDateTime(fromDateStr);
-        final LocalDate toDate = parseStringToLocalDateTime(toDateStr);
-        final ShippingStatisticEntity response = shippingStatisticRepository.getStatisticsByDate(fromDate, toDate);
-        return MapperUtils.convertEntityToDto(response, fromDate, toDate);
     }
 
     /**
@@ -105,8 +55,8 @@ public class ShippingService {
         logger.info(String.format("Init to get status of shipping code: %s", request.getId()));
         return request.getInputs().stream()
                 .map(this::getOrderMovement)
-                .max(Comparator.comparing((ShippingMovement sm) -> sm.getStatus().getOrder())
-                        .thenComparing(sm -> sm.getSubStatus().getOrder()))
+                .max(Comparator.comparing((ShippingMovement sm) -> sm.getStatus().ordinal())
+                        .thenComparing(sm -> sm.getSubStatus().ordinal()))
                 .orElseThrow(() -> new NotStatusException("Statues are empty"));
     }
 
@@ -139,7 +89,7 @@ public class ShippingService {
         }
         if (!shippingStatus.equals(shippingSubStatus.get().getStatus())) {
             throw new BadRequestException(
-                    String.format("Sub-status '%s' does not belong to '%s' status ", subStatus, shippingStatus.getDescription()));
+                    String.format("Sub-status '%s' does not belong to '%s' status ", subStatus, shippingStatus.toString()));
         }
         return shippingSubStatus.get();
     }

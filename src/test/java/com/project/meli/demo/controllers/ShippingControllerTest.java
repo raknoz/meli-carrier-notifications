@@ -5,6 +5,7 @@ import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
 import com.project.meli.demo.services.ShippingService;
+import com.project.meli.demo.services.ShippingStatisticsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -53,6 +53,8 @@ public class ShippingControllerTest {
 
     @MockBean
     private ShippingService shippingService;
+    @MockBean
+    private ShippingStatisticsService shippingStatisticsService;
 
     @BeforeEach
     void setup() {
@@ -150,15 +152,17 @@ public class ShippingControllerTest {
         assertEquals(HEALTH_MSG_OK, resultActions.andReturn().getResponse().getContentAsString());
     }
 
+
     @DisplayName("Class: PackageController - method: getStatisticsByDate - flow: Ok ")
     @Test
     public void getStatisticsByDateOkTest() throws Exception {
         //
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("dateFrom", PARAM_DATE_FROM);
-        params.add("dateTo", PARAM_DATE_TO);
+        params.add("date_from", PARAM_DATE_FROM);
+        params.add("date_to", PARAM_DATE_TO);
         //Given
-        when(shippingService.getStatisticsByDate(PARAM_DATE_FROM, PARAM_DATE_TO)).thenReturn(buildShippingStatisticsResponseDTO());
+        when(shippingStatisticsService.getStatisticsByDate(PARAM_DATE_FROM, PARAM_DATE_TO))
+                .thenReturn(buildShippingStatisticsResponseDTO());
         //When
         final ResultActions resultActions =
                 mockMvc.perform(get(URL_STATISTICS)
@@ -189,11 +193,12 @@ public class ShippingControllerTest {
     public void packageControllerHandleServerErrorTest() throws Exception {
         //
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("dateFrom", "2020-12-15");
-        params.add("dateTo", "2020-12-17");
+        params.add("date_from", PARAM_DATE_FROM);
+        params.add("date_to", PARAM_DATE_TO);
 
         //Given
-        when(shippingService.getStatisticsByDate(anyString(), anyString())).thenThrow(new RuntimeException("Expected Error!"));
+        when(shippingStatisticsService.getStatisticsByDate(PARAM_DATE_FROM, PARAM_DATE_TO))
+                .thenThrow(new RuntimeException("Expected Error!"));
         //Then
         final ResultActions resultActions =
                 mockMvc.perform(get(URL_STATISTICS)

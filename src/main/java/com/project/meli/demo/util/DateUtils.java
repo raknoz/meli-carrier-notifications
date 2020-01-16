@@ -7,13 +7,13 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public final class DateUtils {
 
-    private static final String FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
+    private static final String FORMAT_YYYYMMDD = "yyyyMMdd";
 
     public static LocalDate parseStringToLocalDateTime(final String dateString) {
-        if(isBlank(dateString)){
+        if (isBlank(dateString)) {
             return null;
         }
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_YYYY_MM_DD);
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_YYYYMMDD);
         return LocalDate.parse(dateString, formatter);
     }
 }

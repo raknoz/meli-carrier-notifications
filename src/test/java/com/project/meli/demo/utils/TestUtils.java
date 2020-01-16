@@ -6,9 +6,11 @@ import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingResponseDTO;
 import com.project.meli.demo.dtos.ShippingStatisticsResponseDTO;
 import com.project.meli.demo.dtos.StateShippingRequestDTO;
+import com.project.meli.demo.entities.ShippingMovement;
 import com.project.meli.demo.entities.ShippingStatisticEntity;
+import com.project.meli.demo.entities.ShippingStatus;
+import com.project.meli.demo.entities.ShippingSubStatus;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +18,6 @@ import java.util.List;
 public class TestUtils {
 
     public static final String VALUE_EMPTY = "";
-    public static final Integer VALUE_ONE = 1;
     public static final String SHIPPING_ID = "28123B";
     public static final String SHIPPING_STATUS_DELIVERED = "delivered";
     public static final String SHIPPING_STATUS_NOT_DELIVERED = "not_delivered";
@@ -30,8 +31,8 @@ public class TestUtils {
     public static final String SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG = "En Camino";
     public static final String SHIPPING_SUB_STATUS_LOST_MSG = "Perdido";
     public static final String HEALTH_MSG_OK = "I'm alive!";
-    public static final String PARAM_DATE_FROM = "2020-01-14";
-    public static final String PARAM_DATE_TO = "2020-01-17";
+    public static final String PARAM_DATE_FROM = "20200114";
+    public static final String PARAM_DATE_TO = "20200117";
     public static final Long SUCCESSFUL_REQUESTS = 1L;
     public static final Long ERROR_REQUESTS = 0L;
     public static final Long TOTAL_REQUESTS = 1L;
@@ -94,8 +95,7 @@ public class TestUtils {
     }
 
     public static ShippingStatisticsResponseDTO buildShippingStatisticsResponseDTO() {
-        return new ShippingStatisticsResponseDTO(SUCCESSFUL_REQUESTS, ERROR_REQUESTS, TOTAL_REQUESTS,
-                LocalDate.parse(PARAM_DATE_FROM), LocalDate.parse(PARAM_DATE_TO));
+        return new ShippingStatisticsResponseDTO(SUCCESSFUL_REQUESTS, ERROR_REQUESTS, TOTAL_REQUESTS, null, null);
     }
 
     public static ShippingStatisticEntity buildShippingStatisticEntity() {
@@ -106,6 +106,11 @@ public class TestUtils {
         entity.setSuccessfulRequests(SUCCESSFUL_REQUESTS);
         return entity;
     }
+
+    public static ShippingMovement buildShippingMovement() {
+        return new ShippingMovement(ShippingStatus.HANDLING, ShippingSubStatus.HANDLING_NULL);
+    }
+
 
     private static ShippingRequestDTO getPackageRequestFailDTO() {
         return new ShippingRequestDTO(null,

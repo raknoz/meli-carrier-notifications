@@ -135,21 +135,21 @@ I'm alive!
 
 ### Statistics (GET)
 This endpoint provides information on how many requests were processed and the number of those were successful or error.
-If you want, you can provide a range of dates (Format yyyy-MM-dd) to filter the result, but if you set the attributes to "null", the service
+If you want, you can provide a range of dates (Format yyyyMMdd) to filter the result, but if you set the attributes to "null", the service
 It will process all the information.
 
 ### Request example
 ```bash
-curl -X GET --header 'Accept: application/json' 'http://localhost:9001/api-shipping/statistics?dateFrom=2020-01-12&dateTo=2020-01-17'
+curl -X GET --header 'Accept: application/json' 'http://localhost:9001/api-shipping/statistics?date_from=20200112&date_to=20200117'
 ```
 And the application will response:
 ```json
 {
-    "successfulRequests": 2,
-    "errorRequests": 2,
-    "totalRequests": 4,
-    "dateFrom": "12-01-2020",
-    "dateTo": "17-12-2020"
+    "successful_requests": 2,
+    "error_requests": 2,
+    "total_requests": 4,
+    "date_from": "12-01-2020",
+    "date_to": "17-12-2020"
 }
 ```
 

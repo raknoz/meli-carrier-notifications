@@ -3,32 +3,42 @@ package com.project.meli.demo.services;
 import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingStatisticsResponseDTO;
 import com.project.meli.demo.dtos.StateShippingRequestDTO;
-import com.project.meli.demo.entities.ShippingHistoricalRecord;
+import com.project.meli.demo.entities.ShippingHistoricalEntity;
 import com.project.meli.demo.entities.ShippingMovement;
+import com.project.meli.demo.entities.ShippingStatisticEntity;
 import com.project.meli.demo.entities.ShippingStatus;
 import com.project.meli.demo.entities.ShippingSubStatus;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
 import com.project.meli.demo.repositories.ShippingRepository;
+import com.project.meli.demo.repositories.ShippingStatisticRepository;
 import com.project.meli.demo.repositories.StatusRepository;
+import com.project.meli.demo.util.MapperUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.Optional;
+
+import static com.project.meli.demo.util.DateUtils.parseStringToLocalDateTime;
 
 @Service
 public class ShippingService {
     private final Logger logger = LoggerFactory.getLogger(ShippingService.class);
     private final ShippingRepository shippingRepository;
     private final StatusRepository statusRepository;
+    private final ShippingStatisticRepository shippingStatisticRepository;
 
-    public ShippingService(final ShippingRepository shippingRepository, final StatusRepository statusRepository) {
+    public ShippingService(final ShippingRepository shippingRepository, final StatusRepository statusRepository,
+                           final ShippingStatisticRepository shippingStatisticRepository) {
         this.shippingRepository = shippingRepository;
         this.statusRepository = statusRepository;
+        this.shippingStatisticRepository = shippingStatisticRepository;
     }
 
     /**
@@ -38,7 +48,7 @@ public class ShippingService {
      * @return A string that contain the message of the last sub-status.
      */
     public String packages(final ShippingRequestDTO request) {
-        final ShippingHistoricalRecord shippingHistorical = shippingQueryRegister(request.getId());
+        final ShippingHistoricalEntity shippingHistorical = shippingQueryRegister(request.getId());
         final ShippingMovement shippingMovement = sortingByShippingStatus(request);
         logger.debug(String.format("Shipping code: %s, is in status: %s -> %s", request.getId(),
                 shippingMovement.getStatus().getDescription(), shippingMovement.getSubStatus().getDescription()));
@@ -52,9 +62,9 @@ public class ShippingService {
      * @param shippingCode Id of the shipping.
      * @return Object persisted on the dataBase.
      */
-    public ShippingHistoricalRecord shippingQueryRegister(final String shippingCode) {
+    public ShippingHistoricalEntity shippingQueryRegister(final String shippingCode) {
         logger.info(String.format("Save query of shipping code: %s", shippingCode));
-        return shippingRepository.save(new ShippingHistoricalRecord(shippingCode, null, null));
+        return shippingRepository.save(new ShippingHistoricalEntity(shippingCode, null, null));
     }
 
     /**
@@ -63,22 +73,26 @@ public class ShippingService {
      * @param shippingHistorical Object to update status and save it.
      * @param shippingMovement   Entity with the last status of the Shipping.
      */
-    public void shippingQueryRegister(final ShippingHistoricalRecord shippingHistorical, final ShippingMovement shippingMovement) {
+    public void shippingQueryRegister(final ShippingHistoricalEntity shippingHistorical, final ShippingMovement shippingMovement) {
         logger.info(String.format("Update register of shipping code: %s", shippingHistorical.getShippingCode()));
         shippingHistorical.setStatus(shippingMovement.getStatus().getDescription());
         shippingHistorical.setSubStatus(shippingMovement.getSubStatus().getDescription());
+        shippingHistorical.setDateUpdate(LocalDateTime.now());
         shippingRepository.save(shippingHistorical);
     }
 
     /**
      * Method to return a list of Shipping historical records in pages.
      *
-     * @param dateFrom Initial date to filter the report.
-     * @param dateTo   Final date to filter the report.
+     * @param fromDateStr Initial date to filter the report.
+     * @param toDateStr   Final date to filter the report.
      * @return Object with results of Statistics
      */
-    public ShippingStatisticsResponseDTO getStatisticsByDate(final String dateFrom, final String dateTo) {
-        return null;
+    public ShippingStatisticsResponseDTO getStatisticsByDate(final String fromDateStr, final String toDateStr) {
+        final LocalDate fromDate = parseStringToLocalDateTime(fromDateStr);
+        final LocalDate toDate = parseStringToLocalDateTime(toDateStr);
+        final ShippingStatisticEntity response = shippingStatisticRepository.getStatisticsByDate(fromDate, toDate);
+        return MapperUtils.convertEntityToDto(response, fromDate, toDate);
     }
 
     /**

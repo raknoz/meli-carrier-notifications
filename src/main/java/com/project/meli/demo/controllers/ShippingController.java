@@ -3,6 +3,7 @@ package com.project.meli.demo.controllers;
 
 import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingResponseDTO;
+import com.project.meli.demo.dtos.ShippingStatisticsResponseDTO;
 import com.project.meli.demo.services.ShippingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,9 +59,10 @@ public class ShippingController {
      * @return Object with information about the queries to application.
      */
     @GetMapping("/statistics")
-    public ResponseEntity<Void> getStatisticsByDate(@RequestParam("dateFrom") final String dateFrom,
+    public ResponseEntity<ShippingStatisticsResponseDTO> getStatisticsByDate(@RequestParam("dateFrom") final String dateFrom,
                                                     @RequestParam("dateTo")  final String dateTo) {
-        return new ResponseEntity<>(HttpStatus.OK);
+        final ShippingStatisticsResponseDTO statisticsResponse = shippingService.getStatisticsByDate(dateFrom, dateTo);
+        return ResponseEntity.ok(statisticsResponse);
     }
 
 

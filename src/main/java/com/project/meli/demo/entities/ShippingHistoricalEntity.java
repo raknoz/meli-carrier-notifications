@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "HISTORICAL_QUERY_SHIPPING")
-public class ShippingHistoricalRecord {
+public class ShippingHistoricalEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,18 +26,21 @@ public class ShippingHistoricalRecord {
     @Column(name = "shipping_sub_status")
     private String subStatus;
 
-    @Column(name = "date_time")
-    private LocalDateTime dateTime;
+    @Column(name = "date_create")
+    private LocalDateTime dateCreate;
 
-    public ShippingHistoricalRecord() {
+    @Column(name = "date_update")
+    private LocalDateTime dateUpdate;
+
+    public ShippingHistoricalEntity() {
     }
 
-    public ShippingHistoricalRecord(final String shippingCode, final String status, final String subStatus) {
+    public ShippingHistoricalEntity(final String shippingCode, final String status, final String subStatus) {
         super();
         this.shippingCode = shippingCode;
         this.status = status;
         this.subStatus = subStatus;
-        this.dateTime = LocalDateTime.now();
+        this.dateCreate = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -64,7 +67,15 @@ public class ShippingHistoricalRecord {
         this.subStatus = subStatus;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getDateCreate() {
+        return dateCreate;
+    }
+
+    public LocalDateTime getDateUpdate() {
+        return dateUpdate;
+    }
+
+    public void setDateUpdate(LocalDateTime dateUpdate) {
+        this.dateUpdate = dateUpdate;
     }
 }

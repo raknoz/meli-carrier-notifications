@@ -1,7 +1,7 @@
 package com.project.meli.demo.services;
 
 import com.project.meli.demo.dtos.ShippingRequestDTO;
-import com.project.meli.demo.entities.ShippingHistoricalRecord;
+import com.project.meli.demo.entities.ShippingHistoricalEntity;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.project.meli.demo.utils.TestUtils.HEALTH_MSG_OK;
 import static com.project.meli.demo.utils.TestUtils.SHIPPING_SUB_STATUS_LOST_MSG;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoBlankStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoDisorderStatus;
@@ -113,7 +112,7 @@ public class ShippingServiceTest {
     public void packageServiceStatusDisorderTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoDisorderStatus();
         //Given
-        when(shippingRepository.save(any(ShippingHistoricalRecord.class))).thenReturn(mock(ShippingHistoricalRecord.class));
+        when(shippingRepository.save(any(ShippingHistoricalEntity.class))).thenReturn(mock(ShippingHistoricalEntity.class));
         //When
         final String messageResponse = shippingService.packages(requestDTO);
         //Then
@@ -126,7 +125,7 @@ public class ShippingServiceTest {
     public void packageServiceStatusInOrderTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoInOrderStatus();
         //Given
-        when(shippingRepository.save(any(ShippingHistoricalRecord.class))).thenReturn(mock(ShippingHistoricalRecord.class));
+        when(shippingRepository.save(any(ShippingHistoricalEntity.class))).thenReturn(mock(ShippingHistoricalEntity.class));
         //When
         final String messageResponse = shippingService.packages(requestDTO);
         //Then

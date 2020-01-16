@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingResponseDTO;
 import com.project.meli.demo.dtos.StateShippingRequestDTO;
-import com.project.meli.demo.entities.ShippingHistoricalRecord;
-import com.project.meli.demo.util.PagedResult;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -86,11 +83,6 @@ public class TestUtils {
         return new ShippingRequestDTO(SHIPPING_ID, inputs);
     }
 
-    public static PagedResult<ShippingHistoricalRecord> buildListShippingHistoricalRecord() {
-        return new PagedResult<>(Collections.singletonList(createShippingHistoricalRecord(null)),
-                VALUE_ONE.longValue(), VALUE_ONE, VALUE_ONE);
-    }
-
     public static String packageRequestDtoFailAsJson() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(getPackageRequestFailDTO());
     }
@@ -98,11 +90,6 @@ public class TestUtils {
     private static ShippingRequestDTO getPackageRequestFailDTO() {
         return new ShippingRequestDTO(null,
                 Collections.singletonList(buildStateShippingRequestDto(SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_NULL)));
-    }
-
-    private static ShippingHistoricalRecord createShippingHistoricalRecord(final LocalDateTime localDateTime) {
-        return new ShippingHistoricalRecord(
-                HISTORICAL_SHIPPING_ID, HISTORICAL_SHIPPING_CODE, SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_LOST, localDateTime);
     }
 
     private static ShippingRequestDTO buildPackageRequestDto() {

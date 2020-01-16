@@ -20,10 +20,10 @@ public class ShippingHistoricalRecord {
     @Column(name = "shipping_code")
     private String shippingCode;
 
-    @Column(name = "shiping_status")
+    @Column(name = "shipping_status")
     private String status;
 
-    @Column(name = "shiping_sub_status")
+    @Column(name = "shipping_sub_status")
     private String subStatus;
 
     @Column(name = "date_time")
@@ -32,17 +32,12 @@ public class ShippingHistoricalRecord {
     public ShippingHistoricalRecord() {
     }
 
-    public ShippingHistoricalRecord(final Long id, final String shippingCode, final String status, final String subStatus,
-                                    final LocalDateTime dateTime) {
-        this.id = id;
+    public ShippingHistoricalRecord(final String shippingCode, final String status, final String subStatus) {
+        super();
         this.shippingCode = shippingCode;
         this.status = status;
         this.subStatus = subStatus;
-        this.dateTime = dateTime;
-    }
-
-    public ShippingHistoricalRecord(final String shippingCode, final String status, final String subStatus) {
-        new ShippingHistoricalRecord(null, shippingCode, status, subStatus, LocalDateTime.now());
+        this.dateTime = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -57,8 +52,16 @@ public class ShippingHistoricalRecord {
         return status;
     }
 
+    public void setStatus(final String status) {
+        this.status = status;
+    }
+
     public String getSubStatus() {
         return subStatus;
+    }
+
+    public void setSubStatus(final String subStatus) {
+        this.subStatus = subStatus;
     }
 
     public LocalDateTime getDateTime() {

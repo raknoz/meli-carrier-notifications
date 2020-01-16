@@ -1,6 +1,7 @@
 package com.project.meli.demo.services;
 
 import com.project.meli.demo.dtos.ShippingRequestDTO;
+import com.project.meli.demo.dtos.ShippingStatisticsResponseDTO;
 import com.project.meli.demo.dtos.StateShippingRequestDTO;
 import com.project.meli.demo.entities.ShippingHistoricalRecord;
 import com.project.meli.demo.entities.ShippingMovement;
@@ -11,13 +12,9 @@ import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
 import com.project.meli.demo.repositories.ShippingRepository;
 import com.project.meli.demo.repositories.StatusRepository;
-import com.project.meli.demo.util.PagedResult;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -41,39 +38,47 @@ public class ShippingService {
      * @return A string that contain the message of the last sub-status.
      */
     public String packages(final ShippingRequestDTO request) {
+        final ShippingHistoricalRecord shippingHistorical = shippingQueryRegister(request.getId());
         final ShippingMovement shippingMovement = sortingByShippingStatus(request);
-        logger.info(String.format("Save register of shipping code: %s", request.getId()));
-        shippingQueryRegister(request.getId(), shippingMovement);
-
-        logger.debug(String.format("Shipping code: %s, is in status: %s -> %s", request.getId(), shippingMovement.getStatus().name(),
-                shippingMovement.getMessage()));
+        logger.debug(String.format("Shipping code: %s, is in status: %s -> %s", request.getId(),
+                shippingMovement.getStatus().getDescription(), shippingMovement.getSubStatus().getDescription()));
+        shippingQueryRegister(shippingHistorical, shippingMovement);
         return shippingMovement.getMessage();
     }
 
     /**
-     * Service to save in historical_query_shipping, the information about the request.
+     * Service to save information when start the process.
      *
-     * @param shippingCode     Code to identifier the Shipping.
-     * @param shippingMovement Entity with the last status of the Shipping.
+     * @param shippingCode Id of the shipping.
+     * @return Object persisted on the dataBase.
      */
-    public void shippingQueryRegister(final String shippingCode, final ShippingMovement shippingMovement) {
-        shippingRepository.save(new ShippingHistoricalRecord(shippingCode, shippingMovement.getStatus().name(),
-                shippingMovement.getSubStatus().name()));
+    public ShippingHistoricalRecord shippingQueryRegister(final String shippingCode) {
+        logger.info(String.format("Save query of shipping code: %s", shippingCode));
+        return shippingRepository.save(new ShippingHistoricalRecord(shippingCode, null, null));
+    }
+
+    /**
+     * Service to save in historical_query_shipping, the information about the last status.
+     *
+     * @param shippingHistorical Object to update status and save it.
+     * @param shippingMovement   Entity with the last status of the Shipping.
+     */
+    public void shippingQueryRegister(final ShippingHistoricalRecord shippingHistorical, final ShippingMovement shippingMovement) {
+        logger.info(String.format("Update register of shipping code: %s", shippingHistorical.getShippingCode()));
+        shippingHistorical.setStatus(shippingMovement.getStatus().getDescription());
+        shippingHistorical.setSubStatus(shippingMovement.getSubStatus().getDescription());
+        shippingRepository.save(shippingHistorical);
     }
 
     /**
      * Method to return a list of Shipping historical records in pages.
      *
-     * @param page Number of the page to return.
-     * @param size Number of elements by page.
-     * @param date Date to filter the data.
-     * @return List with results of Statistics
+     * @param dateFrom Initial date to filter the report.
+     * @param dateTo   Final date to filter the report.
+     * @return Object with results of Statistics
      */
-    public PagedResult<ShippingHistoricalRecord> getStatisticsByDate(final Integer page, final Integer size, final String date) {
-        final Pageable paging = PageRequest.of(page, size);
-        final Page<ShippingHistoricalRecord> pagedResult = shippingRepository.findAll(paging);
-        return new PagedResult<>(pagedResult.getContent(), pagedResult.getTotalElements(), pagedResult.getNumberOfElements(),
-                pagedResult.getTotalPages());
+    public ShippingStatisticsResponseDTO getStatisticsByDate(final String dateFrom, final String dateTo) {
+        return null;
     }
 
     /**
@@ -83,11 +88,12 @@ public class ShippingService {
      * @return A object with the max status and max sub-status.
      */
     private ShippingMovement sortingByShippingStatus(final ShippingRequestDTO request) {
+        logger.info(String.format("Init to get status of shipping code: %s", request.getId()));
         return request.getInputs().stream()
                 .map(this::getOrderMovement)
                 .max(Comparator.comparing((ShippingMovement sm) -> sm.getStatus().getOrder())
                         .thenComparing(sm -> sm.getSubStatus().getOrder()))
-                .orElseThrow(() -> new NotStatusException("Status are empty"));
+                .orElseThrow(() -> new NotStatusException("Statues are empty"));
     }
 
     /**
@@ -112,12 +118,14 @@ public class ShippingService {
      * @return Am Object that contain information of sub-status.
      */
     private ShippingSubStatus getSubStatus(final String subStatus, final ShippingStatus shippingStatus) {
-        Optional<ShippingSubStatus> shippingSubStatus = statusRepository.getSubStatusByNameAndStatus(subStatus, shippingStatus);
+        Optional<ShippingSubStatus> shippingSubStatus = statusRepository.getSubStatusByNameAndStatus(subStatus,
+                shippingStatus);
         if (!shippingSubStatus.isPresent()) {
-            throw new NotSubStatusException("Sub Status Not found");
+            throw new NotSubStatusException(String.format("Sub-status '%s' Not found", subStatus));
         }
         if (!shippingStatus.equals(shippingSubStatus.get().getStatus())) {
-            throw new BadRequestException("Sub-status does not belong to this status");
+            throw new BadRequestException(
+                    String.format("Sub-status '%s' does not belong to '%s' status ", subStatus, shippingStatus.getDescription()));
         }
         return shippingSubStatus.get();
     }

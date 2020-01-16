@@ -3,9 +3,7 @@ package com.project.meli.demo.controllers;
 
 import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingResponseDTO;
-import com.project.meli.demo.entities.ShippingHistoricalRecord;
 import com.project.meli.demo.services.ShippingService;
-import com.project.meli.demo.util.PagedResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -22,9 +20,9 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping
 public class ShippingController {
-    private ShippingService shippingService;
-    private final Logger logger = LoggerFactory.getLogger(ShippingController.class);
     private static final String HEALTH_MESSAGE = "I'm alive!";
+    private final Logger logger = LoggerFactory.getLogger(ShippingController.class);
+    private ShippingService shippingService;
 
     public ShippingController(final ShippingService shippingService) {
         this.shippingService = shippingService;
@@ -53,17 +51,16 @@ public class ShippingController {
     }
 
     /**
-     * Method to get information about the historical queries of shipping status.
+     * Method to get information about the historical queries of shipping status.d
      *
-     * @param page Number of page to consult.
-     * @param size How many elements give in the page.
-     * @return List of elements.
+     * @param dateFrom Initial date to filter the report.
+     * @param dateTo   Final date to filter the report.
+     * @return Object with information about the queries to application.
      */
     @GetMapping("/statistics")
-    public ResponseEntity<PagedResult<ShippingHistoricalRecord>> getStatisticsByDate(
-            @RequestParam(name = "page", defaultValue = "0") Integer page,
-            @RequestParam(name = "size", defaultValue = "10") Integer size) {
-        return new ResponseEntity<>(shippingService.getStatisticsByDate(page, size, null), HttpStatus.OK);
+    public ResponseEntity<Void> getStatisticsByDate(@RequestParam("dateFrom") final String dateFrom,
+                                                    @RequestParam("dateTo")  final String dateTo) {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

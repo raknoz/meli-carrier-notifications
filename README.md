@@ -4,12 +4,17 @@
 This is an RESTfull application to validates the status of a shipping and return a description about last sub-status.
 
 ### Technology Stack
-Component         | Technology
----               | ---
-Backend (REST)    | [SpringBoot](https://projects.spring.io/spring-boot) (Java)
-In Memory DB      | H2
-Persistence       | JPA (Using Spring Data)
-Server Build Tools| Maven(Java)
+Component           | Technology
+---                 | ---
+Backend (REST)      | [SpringBoot](https://projects.spring.io/spring-boot) (Java)
+In Memory DB        | H2
+Persistence         | JPA (Using Spring Data)
+Server Build Tools  | Maven(Java)
+Server Hosted       | [heroku](https://www.heroku.com/)
+
+### Heroku hosted
+The url of the application to connect with the API is:
+[https://app-shipping-status.herokuapp.com/api-shipping] https://app-shipping-status.herokuapp.com/api-shipping/
 
 ## Folder Structure
 ```bash
@@ -82,20 +87,17 @@ mvn clean install
 
 
 ### Package (POST)
-If you get the status about some shipping have to send a JSON in the body with the next information and structure:
+This endpoint allows to get the last status about some shipping. The request-body(JSON) to send to the endpoint is:
 
+>
+id      ->  identifier of shipping
+inputs  -> List of status of shipping
+>
+### Request Example
 ```json
 {
     "id": "28123B",
     "inputs": [
-        {
-            "status": "ready_to_ship",
-            "substatus": "printed"
-        },
-        {
-            "status": "shipped",
-            "substatus": null
-        },
        {
            "status": "delivered",
            "substatus": null
@@ -105,7 +107,6 @@ If you get the status about some shipping have to send a JSON in the body with t
 ```
 
 And the application response with the description of the last sub-status:
-
 ```json
 {
     "package" : "Entregado"
@@ -113,17 +114,35 @@ And the application response with the description of the last sub-status:
 ```
 
 ### Health (GET)
-
-If you want to know if the application still response, the end-point is:
+You can to know if the application is still responding:
 
 ```bash
 curl -X GET --header 'Accept: application/json' 'http://localhost:9001/api-shipping/health'
 ```
 
-And if the application is active, you should see the message:
-
+And if the application is active, you should can see the message:
 ```
 I'm alive!
+```
+
+### Statistics (GET)
+This endpoint provides information on how many requests were processed and the number of those were successful or error.
+If you want, you can provide a range of dates (Format yyyy-MM-dd) to filter the result, but if you set the attributes to "null", the service
+It will process all the information.
+
+### Request example
+```bash
+curl -X GET --header 'Accept: application/json' 'http://localhost:9001/api-shipping/statistics?dateFrom=2020-01-12&dateTo=2020-01-17'
+```
+And the application will response:
+```json
+{
+    "successfulRequests": 2,
+    "errorRequests": 2,
+    "totalRequests": 4,
+    "dateFrom": "12-01-2020",
+    "dateTo": "17-12-2020"
+}
 ```
 
 

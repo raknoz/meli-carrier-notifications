@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingResponseDTO;
+import com.project.meli.demo.dtos.ShippingStatisticsResponseDTO;
 import com.project.meli.demo.dtos.StateShippingRequestDTO;
+import com.project.meli.demo.entities.ShippingStatisticEntity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,8 +30,11 @@ public class TestUtils {
     public static final String SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG = "En Camino";
     public static final String SHIPPING_SUB_STATUS_LOST_MSG = "Perdido";
     public static final String HEALTH_MSG_OK = "I'm alive!";
-    private static final Long HISTORICAL_SHIPPING_ID = 123L;
-    private static final String HISTORICAL_SHIPPING_CODE = "123456H";
+    public static final String PARAM_DATE_FROM = "2020-01-14";
+    public static final String PARAM_DATE_TO = "2020-01-17";
+    public static final Long SUCCESSFUL_REQUESTS = 1L;
+    public static final Long ERROR_REQUESTS = 0L;
+    public static final Long TOTAL_REQUESTS = 1L;
 
     public static String packageRequestDtoAsJson() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(buildPackageRequestDto());
@@ -85,6 +91,20 @@ public class TestUtils {
 
     public static String packageRequestDtoFailAsJson() throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(getPackageRequestFailDTO());
+    }
+
+    public static ShippingStatisticsResponseDTO buildShippingStatisticsResponseDTO() {
+        return new ShippingStatisticsResponseDTO(SUCCESSFUL_REQUESTS, ERROR_REQUESTS, TOTAL_REQUESTS,
+                LocalDate.parse(PARAM_DATE_FROM), LocalDate.parse(PARAM_DATE_TO));
+    }
+
+    public static ShippingStatisticEntity buildShippingStatisticEntity() {
+        final ShippingStatisticEntity entity = new ShippingStatisticEntity();
+        entity.setTotalRequests(TOTAL_REQUESTS);
+        entity.setErrorRequests(ERROR_REQUESTS);
+        entity.setStatisticId(1);
+        entity.setSuccessfulRequests(SUCCESSFUL_REQUESTS);
+        return entity;
     }
 
     private static ShippingRequestDTO getPackageRequestFailDTO() {

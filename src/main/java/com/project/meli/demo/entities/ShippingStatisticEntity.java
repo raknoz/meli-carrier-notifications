@@ -32,6 +32,7 @@ public class ShippingStatisticEntity {
     @Column(name = "total_requests")
     private Long totalRequests;
 
+
     public ShippingStatisticEntity() {
     }
 
@@ -45,10 +46,6 @@ public class ShippingStatisticEntity {
 
     public Long getSuccessfulRequests() {
         return successfulRequests;
-    }
-
-    public void setSuccessfulRequests(Long successfulRequests) {
-        this.successfulRequests = successfulRequests;
     }
 
     public Long getErrorRequests() {
@@ -65,5 +62,9 @@ public class ShippingStatisticEntity {
 
     public void setTotalRequests(Long totalRequests) {
         this.totalRequests = totalRequests;
+    }
+
+    public void setSuccessfulRequests(Long successfulRequests) {
+        this.successfulRequests = successfulRequests;
     }
 }

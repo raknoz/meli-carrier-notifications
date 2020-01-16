@@ -1,12 +1,16 @@
 package com.project.meli.demo.services;
 
 import com.project.meli.demo.dtos.ShippingRequestDTO;
+import com.project.meli.demo.dtos.ShippingStatisticsResponseDTO;
 import com.project.meli.demo.entities.ShippingHistoricalEntity;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
 import com.project.meli.demo.repositories.ShippingRepository;
+import com.project.meli.demo.repositories.ShippingStatisticRepository;
 import com.project.meli.demo.repositories.StatusRepository;
+import com.project.meli.demo.util.DateUtils;
+import com.project.meli.demo.util.MapperUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +20,10 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+
+import static com.project.meli.demo.utils.TestUtils.PARAM_DATE_FROM;
+import static com.project.meli.demo.utils.TestUtils.PARAM_DATE_TO;
 import static com.project.meli.demo.utils.TestUtils.SHIPPING_SUB_STATUS_LOST_MSG;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoBlankStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoDisorderStatus;
@@ -25,6 +33,8 @@ import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoSubSta
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoWrongStatus;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoWrongStatusAndSubStatusNull;
 import static com.project.meli.demo.utils.TestUtils.buildPackageRequestDtoWrongSubStatus;
+import static com.project.meli.demo.utils.TestUtils.buildShippingStatisticEntity;
+import static com.project.meli.demo.utils.TestUtils.buildShippingStatisticsResponseDTO;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,11 +44,12 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ShippingServiceTest {
-
     @InjectMocks
     private ShippingService shippingService;
     @Mock
     private ShippingRepository shippingRepository;
+    @Mock
+    private ShippingStatisticRepository shippingStatisticRepository;
     @Spy
     private StatusRepository statusRepository;
 
@@ -131,5 +142,20 @@ public class ShippingServiceTest {
         //Then
         assertNotNull(messageResponse);
         assertEquals(SHIPPING_SUB_STATUS_LOST_MSG, messageResponse);
+    }
+
+    @DisplayName("Class: PackageService - method: getStatisticsByDate - flow: OK")
+    @Test
+    public void getStatisticsByDateOkTest() {
+        final ShippingStatisticsResponseDTO expectedResponse = buildShippingStatisticsResponseDTO();
+        final LocalDate localDateFrom = DateUtils.parseStringToLocalDateTime(PARAM_DATE_FROM);
+        final LocalDate localDateTo = DateUtils.parseStringToLocalDateTime(PARAM_DATE_TO);
+        //Given
+        when(shippingStatisticRepository.getStatisticsByDate(localDateFrom, localDateTo)).thenReturn(buildShippingStatisticEntity());
+        //When
+        final ShippingStatisticsResponseDTO messageResponse = shippingService.getStatisticsByDate(PARAM_DATE_FROM, PARAM_DATE_TO);
+        //Then
+        assertNotNull(messageResponse);
+        assertEquals(expectedResponse.getSuccessfulRequests(), messageResponse.getSuccessfulRequests());
     }
 }

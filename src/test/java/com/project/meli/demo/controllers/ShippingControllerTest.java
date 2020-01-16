@@ -24,7 +24,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import static com.project.meli.demo.utils.TestUtils.HEALTH_MSG_OK;
+import static com.project.meli.demo.utils.TestUtils.PARAM_DATE_FROM;
+import static com.project.meli.demo.utils.TestUtils.PARAM_DATE_TO;
 import static com.project.meli.demo.utils.TestUtils.SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG;
+import static com.project.meli.demo.utils.TestUtils.buildShippingStatisticsResponseDTO;
 import static com.project.meli.demo.utils.TestUtils.packageRequestDtoAsJson;
 import static com.project.meli.demo.utils.TestUtils.packageRequestDtoFailAsJson;
 import static com.project.meli.demo.utils.TestUtils.packageResponseDtoAsJson;
@@ -32,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -151,16 +155,16 @@ public class ShippingControllerTest {
     public void getStatisticsByDateOkTest() throws Exception {
         //
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("dateFrom", "12-12-2019");
-        params.add("dateTo", "20-12-2019");
+        params.add("dateFrom", PARAM_DATE_FROM);
+        params.add("dateTo", PARAM_DATE_TO);
+        //Given
+        when(shippingService.getStatisticsByDate(PARAM_DATE_FROM, PARAM_DATE_TO)).thenReturn(buildShippingStatisticsResponseDTO());
         //When
-
-        //Then
         final ResultActions resultActions =
                 mockMvc.perform(get(URL_STATISTICS)
                         .contentType(MediaType.APPLICATION_JSON)
                         .params(params));
-
+        //Then
         assertNotNull(resultActions);
         assertEquals(HttpStatus.OK.value(), resultActions.andReturn().getResponse().getStatus());
     }
@@ -180,16 +184,16 @@ public class ShippingControllerTest {
         assertTrue(resultActions.andReturn().getResolvedException() instanceof MethodArgumentNotValidException);
     }
 
-    /*
     @DisplayName("Class: PackageController - method: packages - flow: FAIL (Server error)")
     @Test
     public void packageControllerHandleServerErrorTest() throws Exception {
         //
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("page", "1");
-        params.add("size", "2");
+        params.add("dateFrom", "2020-12-15");
+        params.add("dateTo", "2020-12-17");
+
         //Given
-        when(shippingService.getStatisticsByDate(anyInt(), anyInt(), any())).thenThrow(new RuntimeException("Expected Error!"));
+        when(shippingService.getStatisticsByDate(anyString(), anyString())).thenThrow(new RuntimeException("Expected Error!"));
         //Then
         final ResultActions resultActions =
                 mockMvc.perform(get(URL_STATISTICS)
@@ -201,6 +205,4 @@ public class ShippingControllerTest {
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), resultActions.andReturn().getResponse().getStatus());
         assertTrue(resultActions.andReturn().getResolvedException() instanceof RuntimeException);
     }
-
-     */
 }

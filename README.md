@@ -14,7 +14,7 @@ Server Hosted       | [heroku](https://www.heroku.com/)
 
 ### Heroku hosted
 The url of the application to connect with the API is:
-[https://app-shipping-status.herokuapp.com/api-shipping] https://app-shipping-status.herokuapp.com/api-shipping/
+[https://app-shipping-status.herokuapp.com/api-shipping]
 
 ## Folder Structure
 ```bash
@@ -57,6 +57,7 @@ mvn clean install
 ```
 
 ## Logical Business:
+***
 ### The statuses (in order) and sub-statuses (and message of those) available are:
 
 - Handling
@@ -89,10 +90,10 @@ mvn clean install
 ### Package (POST)
 This endpoint allows to get the last status about some shipping. The request-body(JSON) to send to the endpoint is:
 
->
+```
 id      ->  identifier of shipping
 inputs  -> List of status of shipping
->
+```
 ### Request Example
 ```json
 {

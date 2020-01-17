@@ -11,8 +11,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.project.meli.demo.utils.TestUtils.SHIPPING_ID;
 import static com.project.meli.demo.utils.TestUtils.SHIPPING_STATUS_READY_TO_SHIP;
-import static com.project.meli.demo.utils.TestUtils.SHIPPING_SUB_STATUS_NULL;
-import static com.project.meli.demo.utils.TestUtils.buildShippingMovement;
+import static com.project.meli.demo.utils.TestUtils.SHIPPING_SUB_STATUS_DELIVERED_NULL;
+import static com.project.meli.demo.utils.TestUtils.buildShippingMovementSubStatusNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +33,7 @@ public class ShippingHistoricalServiceTest {
     public void shippingQueryRegisterOkTest() {
         //
         final ShippingHistoricalEntity entity =
-                new ShippingHistoricalEntity(SHIPPING_ID, SHIPPING_STATUS_READY_TO_SHIP, SHIPPING_SUB_STATUS_NULL);
+                new ShippingHistoricalEntity(SHIPPING_ID, SHIPPING_STATUS_READY_TO_SHIP, SHIPPING_SUB_STATUS_DELIVERED_NULL);
         //Given
         when(shippingHistoricalRepository.save(any(ShippingHistoricalEntity.class))).thenReturn(entity);
         //When
@@ -48,11 +48,11 @@ public class ShippingHistoricalServiceTest {
     public void shippingQueryRegisterUpdateOkTest() {
         //
         final ShippingHistoricalEntity entityParameter =
-                new ShippingHistoricalEntity(SHIPPING_ID, SHIPPING_STATUS_READY_TO_SHIP, SHIPPING_SUB_STATUS_NULL);
+                new ShippingHistoricalEntity(SHIPPING_ID, SHIPPING_STATUS_READY_TO_SHIP, SHIPPING_SUB_STATUS_DELIVERED_NULL);
         //Given
         when(shippingHistoricalRepository.save(any(ShippingHistoricalEntity.class))).thenReturn(mock(ShippingHistoricalEntity.class));
         //When
-        shippingHistoricalService.shippingQueryRegister(entityParameter, buildShippingMovement());
+        shippingHistoricalService.shippingQueryRegister(entityParameter, buildShippingMovementSubStatusNull());
         //Then
         verify(shippingHistoricalRepository, atLeastOnce()).save(any(ShippingHistoricalEntity.class));
     }

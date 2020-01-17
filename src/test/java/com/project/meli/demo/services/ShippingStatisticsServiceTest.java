@@ -2,7 +2,6 @@ package com.project.meli.demo.services;
 
 import com.project.meli.demo.dtos.ShippingStatisticsResponseDTO;
 import com.project.meli.demo.exceptions.BadRequestException;
-import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.repositories.ShippingStatisticRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

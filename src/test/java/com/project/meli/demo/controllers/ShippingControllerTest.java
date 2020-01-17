@@ -61,13 +61,11 @@ public class ShippingControllerTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    @DisplayName("Class: PackageController - method: packages - flow: FAIL (Bad Request)")
+    @DisplayName("Class: ShippingController - method: packages - flow: FAIL (Bad Request)")
     @Test
     public void packageControllerBadRequestExceptionTest() throws Exception {
-
         //Given
         when(shippingService.packages(any(ShippingRequestDTO.class))).thenThrow(new BadRequestException("Expected Exception test"));
-
         //Then
         final ResultActions resultActions =
                 mockMvc.perform(post(BASE_URL)
@@ -80,9 +78,9 @@ public class ShippingControllerTest {
         assertTrue(resultActions.andReturn().getResolvedException() instanceof BadRequestException);
     }
 
-    @DisplayName("Class: PackageController - method: packages - flow: FAIL (Not Status)")
+    @DisplayName("Class: ShippingController - method: packages - flow: FAIL (Not Status)")
     @Test
-    public void packageControllerNotStatusExceptionTest() throws Exception {
+    public void shippingControllerNotStatusExceptionTest() throws Exception {
 
         //Given
         when(shippingService.packages(any(ShippingRequestDTO.class))).thenThrow(new NotStatusException("Expected Exception test"));
@@ -99,9 +97,9 @@ public class ShippingControllerTest {
         assertTrue(resultActions.andReturn().getResolvedException() instanceof NotStatusException);
     }
 
-    @DisplayName("Class: PackageController - method: packages - flow: FAIL (Not Sub Status)")
+    @DisplayName("Class: ShippingController - method: packages - flow: FAIL (Not Sub Status)")
     @Test
-    public void packageControllerNotSubStatusExceptionTest() throws Exception {
+    public void shippingControllerNotSubStatusExceptionTest() throws Exception {
 
         //Given
         when(shippingService.packages(any(ShippingRequestDTO.class))).thenThrow(new NotSubStatusException("Expected Exception test"));
@@ -118,9 +116,9 @@ public class ShippingControllerTest {
         assertTrue(resultActions.andReturn().getResolvedException() instanceof NotSubStatusException);
     }
 
-    @DisplayName("Class: PackageController - method: packages - flow: Ok ")
+    @DisplayName("Class: ShippingController - method: packages - flow: Ok ")
     @Test
-    public void packageControllerOkTest() throws Exception {
+    public void shippingControllerOkTest() throws Exception {
         //
         final String messageExpected = packageResponseDtoAsJson(SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG);
 
@@ -139,7 +137,7 @@ public class ShippingControllerTest {
         assertEquals(messageExpected, resultActions.andReturn().getResponse().getContentAsString());
     }
 
-    @DisplayName("Class: PackageController - method: getHealth - flow: Ok ")
+    @DisplayName("Class: ShippingController - method: getHealth - flow: Ok ")
     @Test
     public void getHealthOkTest() throws Exception {
         //Then
@@ -153,7 +151,7 @@ public class ShippingControllerTest {
     }
 
 
-    @DisplayName("Class: PackageController - method: getStatisticsByDate - flow: Ok ")
+    @DisplayName("Class: ShippingController - method: getStatisticsByDate - flow: Ok ")
     @Test
     public void getStatisticsByDateOkTest() throws Exception {
         //
@@ -173,9 +171,9 @@ public class ShippingControllerTest {
         assertEquals(HttpStatus.OK.value(), resultActions.andReturn().getResponse().getStatus());
     }
 
-    @DisplayName("Class: PackageController - method: packages - flow: FAIL (Invalid request)")
+    @DisplayName("Class: ControllerHandle - method: packages - flow: FAIL (Invalid request)")
     @Test
-    public void packageControllerHandleMethodArgumentNotValidExceptionTest() throws Exception {
+    public void controllerHandleMethodArgumentNotValidExceptionTest() throws Exception {
         //When
         final ResultActions resultActions =
                 mockMvc.perform(post(BASE_URL)
@@ -188,9 +186,9 @@ public class ShippingControllerTest {
         assertTrue(resultActions.andReturn().getResolvedException() instanceof MethodArgumentNotValidException);
     }
 
-    @DisplayName("Class: PackageController - method: packages - flow: FAIL (Server error)")
+    @DisplayName("Class: ControllerHandle - method: packages - flow: FAIL (Server error)")
     @Test
-    public void packageControllerHandleServerErrorTest() throws Exception {
+    public void controllerHandleServerErrorTest() throws Exception {
         //
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("date_from", PARAM_DATE_FROM);

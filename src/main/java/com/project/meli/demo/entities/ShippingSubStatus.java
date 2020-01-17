@@ -40,6 +40,6 @@ public enum ShippingSubStatus {
 
     @Override
     public String toString() {
-        return super.name().replaceAll("_", "");
+        return this.name().replaceAll("_", " ");
     }
 }

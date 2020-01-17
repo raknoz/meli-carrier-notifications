@@ -41,7 +41,7 @@ public class ShippingServiceTest {
         statusRepository = new StatusRepository();
     }
 
-    @DisplayName("Class: PackageService - method: packages - flow: FAIL (Not Status Exception)")
+    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Not Status Exception)")
     @Test
     public void packageServiceStatusAreEmptyTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoEmptyStatus();
@@ -51,7 +51,7 @@ public class ShippingServiceTest {
         }).isInstanceOf(NotStatusException.class);
     }
 
-    @DisplayName("Class: PackageService - method: packages - flow: FAIL (Status not defined")
+    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Status not defined")
     @Test
     public void packageServiceStatusIsBlankTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoBlankStatus();
@@ -61,7 +61,7 @@ public class ShippingServiceTest {
         }).isInstanceOf(BadRequestException.class);
     }
 
-    @DisplayName("Class: PackageService - method: packages - flow: FAIL (Status not found")
+    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Status not found")
     @Test
     public void packageServiceStatusIsWrongTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoWrongStatus();
@@ -71,7 +71,7 @@ public class ShippingServiceTest {
         }).isInstanceOf(NotStatusException.class);
     }
 
-    @DisplayName("Class: PackageService - method: packages - flow: FAIL (Sub Status not found")
+    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Sub Status not found")
     @Test
     public void packageServiceSubStatusIsWrongTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoWrongSubStatus();
@@ -81,7 +81,7 @@ public class ShippingServiceTest {
         }).isInstanceOf(NotSubStatusException.class);
     }
 
-    @DisplayName("Class: PackageService - method: packages - flow: FAIL (Sub Status not belong to defined status")
+    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Sub Status not belong to defined status")
     @Test
     public void packageServiceSubStatusNotBelongStatusTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoSubStatusNotBelongStatus();
@@ -91,7 +91,7 @@ public class ShippingServiceTest {
         }).isInstanceOf(BadRequestException.class);
     }
 
-    @DisplayName("Class: PackageService - method: packages - flow: FAIL (Status not contain a null sub-status")
+    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Status not contain a null sub-status")
     @Test
     public void packageServiceStatusNotContainsSubStatusNullTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoWrongStatusAndSubStatusNull();
@@ -101,7 +101,7 @@ public class ShippingServiceTest {
         }).isInstanceOf(NotSubStatusException.class);
     }
 
-    @DisplayName("Class: PackageService - method: packages - flow: OK")
+    @DisplayName("Class: shippingService - method: packages - flow: OK")
     @Test
     public void packageServiceStatusDisorderTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoDisorderStatus();
@@ -112,7 +112,7 @@ public class ShippingServiceTest {
         assertEquals(SHIPPING_SUB_STATUS_LOST_MSG, messageResponse);
     }
 
-    @DisplayName("Class: PackageService - method: packages - flow: OK")
+    @DisplayName("Class: shippingService - method: packages - flow: OK")
     @Test
     public void packageServiceStatusInOrderTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoInOrderStatus();

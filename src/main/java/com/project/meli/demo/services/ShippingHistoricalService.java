@@ -34,12 +34,13 @@ public class ShippingHistoricalService {
      *
      * @param shippingHistorical Object to update status and save it.
      * @param shippingMovement   Entity with the last status of the Shipping.
+     * @return Object persisted on the dataBase.
      */
-    public void shippingQueryRegister(final ShippingHistoricalEntity shippingHistorical, final ShippingMovement shippingMovement) {
+    public ShippingHistoricalEntity shippingQueryRegister(final ShippingHistoricalEntity shippingHistorical, final ShippingMovement shippingMovement) {
         logger.info(String.format("Update register of shipping code: %s", shippingHistorical.getShippingCode()));
         shippingHistorical.setStatus(shippingMovement.getStatus().toString());
         shippingHistorical.setSubStatus(shippingMovement.getSubStatus().toString());
         shippingHistorical.setDateUpdate(LocalDateTime.now());
-        shippingHistoricalRepository.save(shippingHistorical);
+        return shippingHistoricalRepository.save(shippingHistorical);
     }
 }

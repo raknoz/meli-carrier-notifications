@@ -23,8 +23,11 @@ public class TestUtils {
     public static final String SHIPPING_STATUS_NOT_DELIVERED = "not_delivered";
     public static final String SHIPPING_STATUS_SHIPPED = "shipped";
     public static final String SHIPPING_STATUS_READY_TO_SHIP = "ready_to_ship";
+    public static final String SHIPPING_STATUS_READY_TO_SHIP_DESC = "READY TO SHIP";
+    public static final String SHIPPING_SUB_STATUS_READY_TO_SHIP_DESC = "READY TO PRINT";
     public static final String SHIPPING_STATUS_WRONG = "almost-already";
-    public static final String SHIPPING_SUB_STATUS_NULL = null;
+    public static final String SHIPPING_SUB_STATUS_DELIVERED_NULL = null;
+    public static final String SHIPPING_SUB_STATUS_NULL_MSG = "Entregado";
     public static final String SHIPPING_SUB_STATUS_LOST = "lost";
     public static final String SHIPPING_SUB_STATUS_PRINTED = "printed";
     public static final String SHIPPING_SUB_STATUS_WRONG = "printed_in_color";
@@ -107,18 +110,21 @@ public class TestUtils {
         return entity;
     }
 
-    public static ShippingMovement buildShippingMovement() {
+    public static ShippingMovement buildShippingMovementSubStatusNull() {
         return new ShippingMovement(ShippingStatus.HANDLING, ShippingSubStatus.HANDLING_NULL);
     }
 
+    public static ShippingMovement buildShippingMovementSubStatusNotNull() {
+        return new ShippingMovement(ShippingStatus.READY_TO_SHIP, ShippingSubStatus.READY_TO_PRINT);
+    }
 
     private static ShippingRequestDTO getPackageRequestFailDTO() {
         return new ShippingRequestDTO(null,
-                Collections.singletonList(buildStateShippingRequestDto(SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_NULL)));
+                Collections.singletonList(buildStateShippingRequestDto(SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_DELIVERED_NULL)));
     }
 
     private static ShippingRequestDTO buildPackageRequestDto() {
-        return getPackageRequestDTO(SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_NULL);
+        return getPackageRequestDTO(SHIPPING_STATUS_DELIVERED, SHIPPING_SUB_STATUS_DELIVERED_NULL);
     }
 
     private static StateShippingRequestDTO buildStateShippingRequestDto(final String status, final String subStatus) {

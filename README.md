@@ -155,8 +155,7 @@ And the application will response:
     "date_to": "17-12-2020"
 }
 ```
-To test the filter of dates there is a file [data.sql](https://github
-.com/raknoz/meli-carrier-notifications/tree/master/src/main/resources/db/changelog/data/historicalQueryShippingData.sql) that insert some
+To test the filter of dates there is a file [data.sql] (https://github.com/raknoz/meli-carrier-notifications/tree/master/src/main/resources/db/changelog/data/historicalQueryShippingData.sql) that insert some
 records into the database in different years.
 
 ### Nivel 4 (Challenge):

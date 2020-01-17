@@ -135,8 +135,8 @@ I'm alive!
 
 ### Statistics (GET)
 This endpoint provides information on how many requests were processed and the number of those were successful or error.
-If you want, you can provide a range of dates (Format yyyyMMdd) to filter the result, but if you set the attributes in "null", the
-service will process all the records.
+If you want, you can provide a range of dates (Format yyyyMMdd) to filter the result, but if you set the attributes to "null", the service
+It will process all the information.
 
 ### Request example
 ```bash
@@ -163,4 +163,4 @@ And the application will response:
 
 - ¿Cómo implementarías la geolocalización de los paquetes?
     - Lo implementaría agregando las coordenadas geográficas de los lugares por donde el paquete va circulando. Por ejemplo cuando se
-    mueve del cliente al depósito, poner las coordenadas del lugar de destino para saber donde está.
+    mueve del vendedor al depósito, poner las coordenadas del lugar de destino para saber donde está.

@@ -4,7 +4,7 @@ package com.project.meli.demo.controllers;
 import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.dtos.ShippingResponseDTO;
 import com.project.meli.demo.dtos.ShippingStatisticsResponseDTO;
-import com.project.meli.demo.services.ShippingService;
+import com.project.meli.demo.services.ShippingStatusService;
 import com.project.meli.demo.services.ShippingStatisticsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,11 +23,11 @@ import javax.validation.Valid;
 public class ShippingController {
     private static final String HEALTH_MESSAGE = "I'm alive!";
     private final Logger logger = LoggerFactory.getLogger(ShippingController.class);
-    private ShippingService shippingService;
+    private ShippingStatusService shippingStatusService;
     private ShippingStatisticsService shippingStatisticsService;
 
-    public ShippingController(final ShippingService shippingService, final ShippingStatisticsService shippingStatisticsService) {
-        this.shippingService = shippingService;
+    public ShippingController(final ShippingStatusService shippingStatusService, final ShippingStatisticsService shippingStatisticsService) {
+        this.shippingStatusService = shippingStatusService;
         this.shippingStatisticsService = shippingStatisticsService;
     }
 
@@ -40,7 +40,7 @@ public class ShippingController {
     @PostMapping("/package")
     public ResponseEntity<ShippingResponseDTO> getLastShippingStatus(@RequestBody @Valid final ShippingRequestDTO request) {
         logger.info(String.format("Validate the status for shipping: %s", request.getId()));
-        return ResponseEntity.ok(new ShippingResponseDTO(shippingService.packages(request)));
+        return ResponseEntity.ok(new ShippingResponseDTO(shippingStatusService.packages(request)));
     }
 
     /**

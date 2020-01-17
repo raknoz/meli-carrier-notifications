@@ -1,5 +1,7 @@
 package com.project.meli.demo.util;
 
+import com.project.meli.demo.exceptions.BadRequestException;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -13,7 +15,11 @@ public final class DateUtils {
         if (isBlank(dateString)) {
             return null;
         }
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_YYYYMMDD);
-        return LocalDate.parse(dateString, formatter);
+        try {
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_YYYYMMDD);
+            return LocalDate.parse(dateString, formatter);
+        } catch (Exception ex) {
+            throw new BadRequestException("Parsing Date error, please check It!");
+        }
     }
 }

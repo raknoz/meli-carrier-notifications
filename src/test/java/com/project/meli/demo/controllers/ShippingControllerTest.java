@@ -4,7 +4,7 @@ import com.project.meli.demo.dtos.ShippingRequestDTO;
 import com.project.meli.demo.exceptions.BadRequestException;
 import com.project.meli.demo.exceptions.NotStatusException;
 import com.project.meli.demo.exceptions.NotSubStatusException;
-import com.project.meli.demo.services.ShippingService;
+import com.project.meli.demo.services.ShippingStatusService;
 import com.project.meli.demo.services.ShippingStatisticsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +52,7 @@ public class ShippingControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ShippingService shippingService;
+    private ShippingStatusService shippingStatusService;
     @MockBean
     private ShippingStatisticsService shippingStatisticsService;
 
@@ -65,7 +65,7 @@ public class ShippingControllerTest {
     @Test
     public void packageControllerBadRequestExceptionTest() throws Exception {
         //Given
-        when(shippingService.packages(any(ShippingRequestDTO.class))).thenThrow(new BadRequestException("Expected Exception test"));
+        when(shippingStatusService.packages(any(ShippingRequestDTO.class))).thenThrow(new BadRequestException("Expected Exception test"));
         //Then
         final ResultActions resultActions =
                 mockMvc.perform(post(BASE_URL)
@@ -83,7 +83,7 @@ public class ShippingControllerTest {
     public void shippingControllerNotStatusExceptionTest() throws Exception {
 
         //Given
-        when(shippingService.packages(any(ShippingRequestDTO.class))).thenThrow(new NotStatusException("Expected Exception test"));
+        when(shippingStatusService.packages(any(ShippingRequestDTO.class))).thenThrow(new NotStatusException("Expected Exception test"));
 
         //Then
         final ResultActions resultActions =
@@ -102,7 +102,7 @@ public class ShippingControllerTest {
     public void shippingControllerNotSubStatusExceptionTest() throws Exception {
 
         //Given
-        when(shippingService.packages(any(ShippingRequestDTO.class))).thenThrow(new NotSubStatusException("Expected Exception test"));
+        when(shippingStatusService.packages(any(ShippingRequestDTO.class))).thenThrow(new NotSubStatusException("Expected Exception test"));
 
         //Then
         final ResultActions resultActions =
@@ -123,7 +123,7 @@ public class ShippingControllerTest {
         final String messageExpected = packageResponseDtoAsJson(SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG);
 
         //Given
-        when(shippingService.packages(any(ShippingRequestDTO.class))).thenReturn(SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG);
+        when(shippingStatusService.packages(any(ShippingRequestDTO.class))).thenReturn(SHIPPING_SUB_STATUS_SHIPPED_NULL_MSG);
 
         //Then
         final ResultActions resultActions =

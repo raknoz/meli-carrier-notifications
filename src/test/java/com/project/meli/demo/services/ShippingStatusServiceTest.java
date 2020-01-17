@@ -28,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
-public class ShippingServiceTest {
+public class ShippingStatusServiceTest {
     @InjectMocks
-    private ShippingService shippingService;
+    private ShippingStatusService shippingStatusService;
     @Mock
     private ShippingHistoricalService shippingHistoricalService;
     @Spy
@@ -41,83 +41,83 @@ public class ShippingServiceTest {
         statusRepository = new StatusRepository();
     }
 
-    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Not Status Exception)")
+    @DisplayName("Class: shippingStatusService - method: packages - flow: FAIL (Not Status Exception)")
     @Test
     public void packageServiceStatusAreEmptyTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoEmptyStatus();
         //When
         assertThatThrownBy(() -> {
-            shippingService.packages(requestDTO);
+            shippingStatusService.packages(requestDTO);
         }).isInstanceOf(NotStatusException.class);
     }
 
-    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Status not defined")
+    @DisplayName("Class: shippingStatusService - method: packages - flow: FAIL (Status not defined")
     @Test
     public void packageServiceStatusIsBlankTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoBlankStatus();
         //When
         assertThatThrownBy(() -> {
-            shippingService.packages(requestDTO);
+            shippingStatusService.packages(requestDTO);
         }).isInstanceOf(BadRequestException.class);
     }
 
-    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Status not found")
+    @DisplayName("Class: shippingStatusService - method: packages - flow: FAIL (Status not found")
     @Test
     public void packageServiceStatusIsWrongTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoWrongStatus();
         //When
         assertThatThrownBy(() -> {
-            shippingService.packages(requestDTO);
+            shippingStatusService.packages(requestDTO);
         }).isInstanceOf(NotStatusException.class);
     }
 
-    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Sub Status not found")
+    @DisplayName("Class: shippingStatusService - method: packages - flow: FAIL (Sub Status not found")
     @Test
     public void packageServiceSubStatusIsWrongTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoWrongSubStatus();
         //When
         assertThatThrownBy(() -> {
-            shippingService.packages(requestDTO);
+            shippingStatusService.packages(requestDTO);
         }).isInstanceOf(NotSubStatusException.class);
     }
 
-    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Sub Status not belong to defined status")
+    @DisplayName("Class: shippingStatusService - method: packages - flow: FAIL (Sub Status not belong to defined status")
     @Test
     public void packageServiceSubStatusNotBelongStatusTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoSubStatusNotBelongStatus();
         //When
         assertThatThrownBy(() -> {
-            shippingService.packages(requestDTO);
+            shippingStatusService.packages(requestDTO);
         }).isInstanceOf(BadRequestException.class);
     }
 
-    @DisplayName("Class: shippingService - method: packages - flow: FAIL (Status not contain a null sub-status")
+    @DisplayName("Class: shippingStatusService - method: packages - flow: FAIL (Status not contain a null sub-status")
     @Test
     public void packageServiceStatusNotContainsSubStatusNullTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoWrongStatusAndSubStatusNull();
         //When
         assertThatThrownBy(() -> {
-            shippingService.packages(requestDTO);
+            shippingStatusService.packages(requestDTO);
         }).isInstanceOf(NotSubStatusException.class);
     }
 
-    @DisplayName("Class: shippingService - method: packages - flow: OK")
+    @DisplayName("Class: shippingStatusService - method: packages - flow: OK")
     @Test
     public void packageServiceStatusDisorderTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoDisorderStatus();
         //When
-        final String messageResponse = shippingService.packages(requestDTO);
+        final String messageResponse = shippingStatusService.packages(requestDTO);
         //Then
         assertNotNull(messageResponse);
         assertEquals(SHIPPING_SUB_STATUS_LOST_MSG, messageResponse);
     }
 
-    @DisplayName("Class: shippingService - method: packages - flow: OK")
+    @DisplayName("Class: shippingStatusService - method: packages - flow: OK")
     @Test
     public void packageServiceStatusInOrderTest() {
         final ShippingRequestDTO requestDTO = buildPackageRequestDtoInOrderStatus();
         //When
-        final String messageResponse = shippingService.packages(requestDTO);
+        final String messageResponse = shippingStatusService.packages(requestDTO);
         //Then
         assertNotNull(messageResponse);
         assertEquals(SHIPPING_SUB_STATUS_LOST_MSG, messageResponse);

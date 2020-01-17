@@ -135,8 +135,8 @@ I'm alive!
 
 ### Statistics (GET)
 This endpoint provides information on how many requests were processed and the number of those were successful or error.
-If you want, you can provide a range of dates (Format yyyyMMdd) to filter the result, but if you set the attributes to "null", the service
-It will process all the information.
+If you want, you can provide a range of dates (Format yyyyMMdd) to filter the result, but if you set the attributes in "null", the
+service will process all the records.
 
 ### Request example
 ```bash
@@ -156,9 +156,11 @@ And the application will response:
 
 ### Nivel 4 (Challenge):
 - ¿Qué necesita el sistema para poder rastrear los paquetes en tiempo real?
-    - Sería necesario tener el número de trackeo del vehículo que transporta el envío, para consultar a la api del empresa de transporte por
-     es estado del vehículo que lleva ese paquete.
+    - Sería necesario tener el número de trackeo del vehículo que transporta el envío, para consultar a la empresa de transporte por
+     la ubicación del vehículo que lleva ese paquete. Esto podría ser que la empresa de transporte tenga una api de consulta y pasandole
+     el número de identificación del vehículo, nos dé las coordenadas de donde se está en ese momento, o también que nos diga el estado
+     del envío si es que no se puede compartir la ubicación por seguridad.
 
 - ¿Cómo implementarías la geolocalización de los paquetes?
-    - Lo implementaría agregando las coordenadas geográficas de los lugares por donde el paquete va circulando, cada vez que cambia de
-    estado.
+    - Lo implementaría agregando las coordenadas geográficas de los lugares por donde el paquete va circulando. Por ejemplo cuando se
+    mueve del cliente al depósito, poner las coordenadas del lugar de destino para saber donde está.

@@ -19,12 +19,12 @@ import java.util.Comparator;
 import java.util.Optional;
 
 @Service
-public class ShippingService {
-    private final Logger logger = LoggerFactory.getLogger(ShippingService.class);
+public class ShippingStatusService {
+    private final Logger logger = LoggerFactory.getLogger(ShippingStatusService.class);
     private final StatusRepository statusRepository;
     private final ShippingHistoricalService shippingHistoricalService;
 
-    public ShippingService(final ShippingHistoricalService shippingHistoricalService, final StatusRepository statusRepository) {
+    public ShippingStatusService(final ShippingHistoricalService shippingHistoricalService, final StatusRepository statusRepository) {
         this.shippingHistoricalService = shippingHistoricalService;
         this.statusRepository = statusRepository;
     }

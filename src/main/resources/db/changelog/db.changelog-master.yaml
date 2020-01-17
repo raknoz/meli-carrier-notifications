@@ -4,3 +4,6 @@ databaseChangeLog:
   # Schema
   - include:
       file: db/changelog/schema/historicalQueryShippingSchema.sql
+  # Data
+  - include:
+      file: db/changelog/data/historicalQueryShippingData.sql

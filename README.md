@@ -19,16 +19,19 @@ https://app-shipping-status.herokuapp.com/api-shipping
 ## Folder Structure
 ```bash
 PROJECT_FOLDER
-│  README.md
+│  README.md # This file.
 │  pom.xml
+│  Carrier-package-ML.postman_collection.json # A little request to test the endpoints.
 └──[src]
 │  └──[main]
 │  │   └──[java]
 │  │   └──[resources]
 │  │      └──[db]
 │  │         └──[changelog]
+│  │            └──[data]
+│  │                historicalQueryShippingData.sql # Contains DB Script to insert some records that executes when the App Starts-up.
 │  │            └──[schema]
-│  │                historicalQueryShippingSchema.sql  # Contains DB Script to create tables that executes during the App Startup.
+│  │                historicalQueryShippingSchema.sql  # Contains DB Script to create tables that executes when the App Starts-up.
 │  │            db.changelog-master.yaml  # It's a Script to orchestra how to create the tables on the database.
 │  │  application.yml #contains springboot configurations
 │  │
@@ -152,7 +155,9 @@ And the application will response:
     "date_to": "17-12-2020"
 }
 ```
-
+To test the filter of dates there is a file [data.sql](https://github
+.com/raknoz/meli-carrier-notifications/tree/master/src/main/resources/db/changelog/data/historicalQueryShippingData.sql) that insert some
+records into the database in different years.
 
 ### Nivel 4 (Challenge):
 - ¿Qué necesita el sistema para poder rastrear los paquetes en tiempo real?
